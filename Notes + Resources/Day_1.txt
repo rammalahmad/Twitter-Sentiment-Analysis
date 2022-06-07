@@ -6,7 +6,7 @@ Voir si on finetune ou pas
 Chercher kaggle (dataset, les concours)
 
 Model que je vais tester :
-https://huggingface.co/distilgpt2 
+https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment
 
 GitHub crash course:
 https://www.youtube.com/watch?v=SWYqp7iY_Tc&t=1078s
@@ -19,4 +19,4 @@ https://zeroesandones.medium.com/how-to-commit-and-push-your-changes-to-your-git
 https://www.sachinsf.com/how-to-push-the-code-from-vs-code-to-github/#:~:text=To%20push%20the%20code%20to,push%20your%20folder%20to%20Github.
 
 Day's objective:
-Test a simple pretrained sentimental model distilgpt2
+Test a simple pretrained sentimental model bert base
