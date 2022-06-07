@@ -18,3 +18,5 @@ Learning the dynamic between VsCode and Github:
 https://zeroesandones.medium.com/how-to-commit-and-push-your-changes-to-your-github-repository-in-vscode-77a7a3d7dd02
 https://www.sachinsf.com/how-to-push-the-code-from-vs-code-to-github/#:~:text=To%20push%20the%20code%20to,push%20your%20folder%20to%20Github.
 
+Day's objective:
+Test a simple pretrained sentimental model distilgpt2
