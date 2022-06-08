@@ -41,4 +41,16 @@ https://fasttext.cc/
 Have a look at https://au.mathworks.com/help/textanalytics/ug/classify-text-data-using-deep-learning.html 
 and https://au.mathworks.com/help/deeplearning/ug/multilabel-text-classification-using-deep-learning.html
 
+Key conclusion for the moment: if it comes to finetuning a pre-trained model, it will be either Bert or XLNet
+
+Could be interesting for twitter:
+https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest (three labels in output)
+
+Vader model: (not ideal since it can't be finetuned easily, no direct implementation on Kaggle)
+https://towardsdatascience.com/the-most-favorable-pre-trained-sentiment-classifiers-in-python-9107c06442c6
+
+Youtube Playlist on BERT usage to be seen ASAP:
+https://www.youtube.com/watch?v=-CAC4wK9Ey0&list=PLEJK-H61XlwxpfpVzt3oDLQ8vr1XiEhev
+https://github.com/curiousily  the git account
+
 
