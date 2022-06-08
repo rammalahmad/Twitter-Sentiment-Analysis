@@ -4,8 +4,6 @@ Try some code...
 Learn the difference between structured and unstructured text data
 Shift your focus to sentimental analysis
 
-
-
 Site for purchasing data esg oriented: (price around 250 dollars) id we decide to fine-tune
 https://datarade.ai/data-categories/esg-sentiment-data
 
@@ -31,3 +29,16 @@ Relying on translation motors could be a possibility
 
 Another interesting model to classify data into one of the three categories(E,S or G):
 https://huggingface.co/yiyanghkust/finbert-esg
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+Focusing on sentimental analysis:
+
+Another plateform to dig potential models: to be seen later
+https://fasttext.cc/
+
+Have a look at https://au.mathworks.com/help/textanalytics/ug/classify-text-data-using-deep-learning.html 
+and https://au.mathworks.com/help/deeplearning/ug/multilabel-text-classification-using-deep-learning.html
+
+
