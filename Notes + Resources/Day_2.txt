@@ -15,5 +15,10 @@ further pre-training Google’s “BERT” language model on large unstructured 
 https://towardsdatascience.com/nlp-meets-sustainable-investing-d0542b3c264b
 Very interesting approach, there's a need to understand some key concepts the intern used in his work
 Worth testing
+https://github.com/mukut03/ESG-BERT
+Idea to be discussed with Alexander: 
+Three steps algorithm: (reliable or non-reliable news) -> (Categorize into a certain label) -> (sentiment analysis + or -)
 
+How to deal with many laguages:
+Relying on translation motors could be a possibility
 
