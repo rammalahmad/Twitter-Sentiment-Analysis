@@ -1,8 +1,8 @@
 Objectives: 
-Start by writing a script for training
-Research the internet for potential models and how to train them properly
+Research the internet for potential interesting models and how to train them properly
 Try some code...
 Learn the difference between structured and unstructured text data
+Shift your focus to sentimental analysis
 
 
 
@@ -18,7 +18,16 @@ Worth testing
 https://github.com/mukut03/ESG-BERT
 Idea to be discussed with Alexander: 
 Three steps algorithm: (reliable or non-reliable news) -> (Categorize into a certain label) -> (sentiment analysis + or -)
+Original BERT model:
+https://github.com/google-research/bert : This is implemented in TensorFlow however
+There are equivalents on HuggingFace
+
+
+6 pretrained models for text classification:
+https://www.analyticsvidhya.com/blog/2020/03/6-pretrained-models-text-classification/
 
 How to deal with many laguages:
 Relying on translation motors could be a possibility
 
+Another interesting model to classify data into one of the three categories(E,S or G):
+https://huggingface.co/yiyanghkust/finbert-esg
