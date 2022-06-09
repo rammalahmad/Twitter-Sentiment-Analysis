@@ -72,8 +72,9 @@ https://towardsdatascience.com/train-and-deploy-fine-tuned-gpt-2-model-using-pyt
 
 Part_5: Explore the youtube channel on Bert
 
-
-
+Link : https://www.youtube.com/watch?v=-CAC4wK9Ey0&list=PLEJK-H61XlwxpfpVzt3oDLQ8vr1XiEhev
+4 videos in total
+The first two videos could be interesting as we talk about the scraping of the data and how to preprocess it. Could be helpful actually...
 
 
 Part_6: Try finetuning a RoBERTa model by freezing the FC layers and training the embedding...
@@ -94,4 +95,5 @@ https://www.kaggle.com/code/dangelov/covid-19-top2vec-interactive-search
 Research paper to consider: https://arxiv.org/pdf/2008.09470.pdf
 
 
-Part_8: Do the research on embeddings and general nlp networks structure
+Idea: Scrap tweets related to E,S or G. Then do the classification if positive or negative by hand to finetune models etc...
+That's how you could create your first database
