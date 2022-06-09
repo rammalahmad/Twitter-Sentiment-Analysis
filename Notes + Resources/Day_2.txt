@@ -75,8 +75,8 @@ This notebook is quite useful to make a sentiment analyser from Bert, the only d
 A possibility would be to train the model on an unsupervised scrapped data set...?
 
 
-Recupérer les tweets
+Scrap the tweets
 Test sentimental analysis
 The relation between a firm and the tweet
 
-Overview de ce que j'ai trouvé pour Lundi
+Prepare an overview for everything you've done this week till monday ;)
