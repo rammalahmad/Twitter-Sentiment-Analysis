@@ -42,6 +42,7 @@ LSTM concept to explore:
 Have a look at https://au.mathworks.com/help/textanalytics/ug/classify-text-data-using-deep-learning.html 
 and https://au.mathworks.com/help/deeplearning/ug/multilabel-text-classification-using-deep-learning.html
 and https://www.kaggle.com/code/arunmohan003/sentiment-analysis-using-lstm-pytorch (in PyTorch)
+Edit: they are slow and clunky networks. 
 
 Key conclusion for the moment: if it comes to finetuning a pre-trained model, it will be either Bert or XLNet
 
