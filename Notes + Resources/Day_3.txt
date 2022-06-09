@@ -1,0 +1,65 @@
+Goals based on Day_2:
+1 Research unsupervised fine-tuning
+2 Read the research paper pdf on finetuning Bert
+3 Read Bert,RoBERTa, DistilBERT, XLNet
+4 Research Kaggle on GPT-2
+3 Explore the youtube channel on Bert
+4 Try finetuning a bert model by freezing the FC layers and training the embedding...
+5 Research text clustering if it's interesting for our model
+
+
+Refs:
+
+Bert all in one:
+https://www.kaggle.com/code/ritesh2000/bert-all-in-one
+A fully documented notebook about how Bert works and the process of fine-tuning
+Interesting article on the finetuning process of Bert, to be reviewed:
+https://blog.paperspace.com/bert-natural-language-processing/
+
+More on Vader model:
+It's uncompatible with pytorch, the results are worse than BERT and GPT2
+Here you can find a simple implementation with some examples:
+https://www.kaggle.com/code/datatattle/lexicon-sentiment-analysis-unsupervised
+
+
+Models to be considered: XLNet, Bert and GPT
+
+
+Part_1: Research unsupervised fine-tuning
+
+From the "Unsupervised_Finetuning_in_computer_vision" we conclude that the naive way of
+unsupervised finetuning (continue the training with the new unlabeled data) does not work that well, 
+because existing unsupervised learning schemes (e.g., contrastive learning) often require large-scale 
+data to work properly. Otherwise, they will destroy the original pretrained representation 
+structure and struggle in learning a compact representation in the target domain.
+More complicated approches were discussed like merging the "finetuning dataset" with 10% of the
+original training data in order to keep the network in good shape.
+
+In the article "Unsupervised_Finetuning_for_text_clustering" the author describes his method for clustering 
+based on the BERT model. 
+Discuss the idea with Alexander of clustering to see if it's a possible option in general (or even unsupervised 
+finetuning)
+
+
+Part_2:
+
+
+Part_3: Read Bert,RoBERTa, DistilBERT, XLNet
+
+XLNet is larger and has better metrics than 
+RoBERTa outperforms both BERT and XLNet apparently. It was introduced by Facebook, needs a considerable computational power
+If we're looking for the best prediction metrics Roberta is a great choice. The downside is the computational power.
+Next step would be to search for already established models in XLNet & RoBERTa. For that i added two research papers
+Mapping_ESG_Trends and E&S issues to be read asap
+
+
+Part_4:Research Kaggle on GPT-2
+
+Nothing on sentiment analysis using GPT-2 model on Kaggle
+GPT-2 in its nature is a generative model while BERT isn’t. That’s why you can find a lot of tech blogs using 
+BERT for text classification tasks and GPT-2 for text-generation tasks, but not much on using GPT-2 for text 
+classification tasks.
+If we persist on using the GPT-2 model here's a link kind of explaining the process (very much different from Bert):
+https://towardsdatascience.com/train-and-deploy-fine-tuned-gpt-2-model-using-pytorch-on-amazon-sagemaker-to-classify-news-articles-612f9957c7b
+
+
