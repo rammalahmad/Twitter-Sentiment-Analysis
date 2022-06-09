@@ -1,18 +1,20 @@
-Goals based on Day_2:
+Goals of the day:
 1 Research unsupervised fine-tuning
 2 Read the research paper pdf on finetuning Bert
 3 Read Bert,RoBERTa, DistilBERT, XLNet
 4 Research Kaggle on GPT-2
-3 Explore the youtube channel on Bert
-4 Try finetuning a bert model by freezing the FC layers and training the embedding...
-5 Research text clustering if it's interesting for our model
+5 Explore the youtube channel on Bert
+6 Try finetuning a RoBERTa model by freezing the FC layers and training the embedding...
+7 Research text clustering if it's interesting for our model
+8 Do the research on embeddings and general nlp networks structure
 
 
 Refs:
 
 Bert all in one:
-https://www.kaggle.com/code/ritesh2000/bert-all-in-one
 A fully documented notebook about how Bert works and the process of fine-tuning
+https://www.kaggle.com/code/ritesh2000/bert-all-in-one
+
 Interesting article on the finetuning process of Bert, to be reviewed:
 https://blog.paperspace.com/bert-natural-language-processing/
 
@@ -22,12 +24,12 @@ Here you can find a simple implementation with some examples:
 https://www.kaggle.com/code/datatattle/lexicon-sentiment-analysis-unsupervised
 
 
-Models to be considered: XLNet, Bert and GPT
+Models to be considered: XLNet, RoBerta and GPT
 
 
 Part_1: Research unsupervised fine-tuning
 
-From the "Unsupervised_Finetuning_in_computer_vision" we conclude that the naive way of
+From the "Unsupervised_Finetuning_in_computer_vision.pdf" we conclude that the naive way of
 unsupervised finetuning (continue the training with the new unlabeled data) does not work that well, 
 because existing unsupervised learning schemes (e.g., contrastive learning) often require large-scale 
 data to work properly. Otherwise, they will destroy the original pretrained representation 
@@ -41,19 +43,24 @@ Discuss the idea with Alexander of clustering to see if it's a possible option i
 finetuning)
 
 
-Part_2:
+Part_2: Read the research paper pdf on finetuning Bert
+
+Not too helpful, we learn that the linguistic features are still available, and that the fine-tuning process does 
+not lead to catastrophic forgetting.
 
 
-Part_3: Read Bert,RoBERTa, DistilBERT, XLNet
+Part_3: Read Bert,RoBERTa, DistilBERT, XLNet pdf
 
 XLNet is larger and has better metrics than 
 RoBERTa outperforms both BERT and XLNet apparently. It was introduced by Facebook, needs a considerable computational power
 If we're looking for the best prediction metrics Roberta is a great choice. The downside is the computational power.
-Next step would be to search for already established models in XLNet & RoBERTa. For that i added two research papers
-Mapping_ESG_Trends and E&S issues to be read asap
+Next step would be to search for already established models in XLNet & RoBERTa. For that i added one research papers
+E&S issues where they used the RoBERTa model. They didn't give details about the training process.
+There are some interesting info on the construction of the database (preparing a training database then using the finetuned model
+to create the dictionary). To be reviewed for later.
 
 
-Part_4:Research Kaggle on GPT-2
+Part_4: Research Kaggle on GPT-2
 
 Nothing on sentiment analysis using GPT-2 model on Kaggle
 GPT-2 in its nature is a generative model while BERT isn’t. That’s why you can find a lot of tech blogs using 
@@ -63,3 +70,28 @@ If we persist on using the GPT-2 model here's a link kind of explaining the proc
 https://towardsdatascience.com/train-and-deploy-fine-tuned-gpt-2-model-using-pytorch-on-amazon-sagemaker-to-classify-news-articles-612f9957c7b
 
 
+Part_5: Explore the youtube channel on Bert
+
+
+
+
+
+Part_6: Try finetuning a RoBERTa model by freezing the FC layers and training the embedding...
+
+A very good introduction
+https://raphaelb.org/posts/freezing-bert/
+
+Freezing layers RoBERTa pdf check it asap
+
+
+Part_7: Research text clustering if it's interesting for our model
+
+Check BERTopic: https://colab.research.google.com/drive/1FieRA9fLdkQEGDIMYl0I3MCjSUKVF8C-?usp=sharing
+https://towardsdatascience.com/topic-modeling-with-bert-779f7db187e6
+https://discuss.huggingface.co/t/clustering-news-articles-with-sentence-bert/3361
+Top2Vec (topic to vector) implementation:
+https://www.kaggle.com/code/dangelov/covid-19-top2vec-interactive-search
+Research paper to consider: https://arxiv.org/pdf/2008.09470.pdf
+
+
+Part_8: Do the research on embeddings and general nlp networks structure
