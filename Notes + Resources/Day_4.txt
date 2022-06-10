@@ -44,4 +44,22 @@ https://snrspeaks.medium.com/fine-tuning-xlnet-model-for-text-classification-in-
 The RoBERTa paper mentioned that the same process could be applied to XLNet
 
 
-Part 5: Research text clustering if it's interesting for our model
+Part 5: Research topic modelling if it's interesting for our work
+
+BERTopic: 
+https://github.com/MaartenGr/BERTopic
+https://colab.research.google.com/drive/1FieRA9fLdkQEGDIMYl0I3MCjSUKVF8C-?usp=sharing
+It is capable of fitting articles into categories, i would it may be worth a try considering it.
+It answers the question ‘Which topic can frequently be found in these documents?’
+
+Explaining how to create topic identifier
+https://towardsdatascience.com/topic-modeling-with-bert-779f7db187e6
+Steps: find data -> pass that data in encoder (for that use sentence transformers: https://github.com/UKPLab/sentence-transformers) 
+        -> reduce dimension (using umap for example)-> cluster the outcome (using HDBSAN for example)
+
+An alternative for BERTopic is Top2vec
+BERTopic vs Top2Vec: https://github.com/MaartenGr/BERTopic/issues/372
+Top2Vec (topic to vector):
+Implementation:
+https://www.kaggle.com/code/dangelov/covid-19-top2vec-interactive-search
+Research paper to consider if we decide to go with Top2Vec: https://arxiv.org/pdf/2008.09470.pdf
