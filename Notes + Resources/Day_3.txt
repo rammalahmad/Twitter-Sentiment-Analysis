@@ -51,7 +51,7 @@ not lead to catastrophic forgetting.
 
 Part_3: Read Bert,RoBERTa, DistilBERT, XLNet pdf
 
-XLNet is larger and has better metrics than 
+XLNet is larger and has better metrics than BERT
 RoBERTa outperforms both BERT and XLNet apparently. It was introduced by Facebook, needs a considerable computational power
 If we're looking for the best prediction metrics Roberta is a great choice. The downside is the computational power.
 Next step would be to search for already established models in XLNet & RoBERTa. For that i added one research papers
@@ -96,4 +96,5 @@ Research paper to consider: https://arxiv.org/pdf/2008.09470.pdf
 
 
 Idea: Scrap tweets related to E,S or G. Then do the classification if positive or negative by hand to finetune models etc...
+We could use the
 That's how you could create your first database
