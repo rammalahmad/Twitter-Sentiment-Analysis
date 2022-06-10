@@ -4,7 +4,8 @@ Goals:
 3 Read Freezing_layers_RoBERTa
 4 Research on finetuning XLNet
 5 Research text clustering if it's interesting for our model
-6 Prepare a presentation of this week's findings
+6 Research Topic modeling with sentiment analysis
+7 Prepare a presentation of this week's findings
 
 
 Part 1: Finish the youtube videos & Try implementing the youtube code
@@ -63,3 +64,13 @@ Top2Vec (topic to vector):
 Implementation:
 https://www.kaggle.com/code/dangelov/covid-19-top2vec-interactive-search
 Research paper to consider if we decide to go with Top2Vec: https://arxiv.org/pdf/2008.09470.pdf
+
+
+Part 6: Research Topic modeling with sentiment analysis
+
+Topic modeling will be used to determine the topics of discussion on Twitter about ESG. Sentiment analysis will be used to 
+determine the different levels of positive and negative opinion on the enterprise present in the dataset.
+We take an enterprise for example and we try to find all the tweets that are relevant to it. We do the topic modeling on
+the collected tweets, then we find which among those topics are interesting for the ESG ratings. We then classify using a sentiment
+analysis model on a scale from 1 to 100 in order to determine the ESG score.
+This approach has been used before.
