@@ -1,17 +1,21 @@
 Goals:
-Finish the youtube videos & Try implementing the youtube code
-Research Ordinal Categorical Classification (ehen two classes are close to each other)
-Research on finetuning RoBERTa and XLNet
-Research text clustering if it's interesting for our model
-Prepare a presentation of this week's findings
+1 Finish the youtube videos & Try implementing the youtube code
+2 Research Ordinal Categorical Classification (ehen two classes are close to each other)
+3 Read Freezing_layers_RoBERTa
+4 Research on finetuning XLNet
+5 Research text clustering if it's interesting for our model
+6 Prepare a presentation of this week's findings
 
 
-Finish the youtube videos & Try implementing the youtube code
+Part 1: Finish the youtube videos & Try implementing the youtube code
+
 We cloned the repository for the finetuning of bert_case. The sentiment_analysis_with_Bert notebook provides a good
 struture to adopt for the work.
 
 
-Research Ordinal Categorical Classification (when two classes are close to each other)
+Part 2: Research Ordinal Categorical Classification (when two classes are close to each other)
+
+https://towardsdatascience.com/simple-trick-to-train-an-ordinal-regression-with-any-classifier-6911183d2a3c
 The idea: 
 Instead of having a k-classifier we use k binary classifiers each prediction the prbability of being superior to a 
 certain scale (form 1 to 5 for example)
@@ -20,7 +24,24 @@ P(y=x) = P(y>=x) - P(y>=x+1)
 Could be interesting to implement in our model 
 
 
-Research on finetuning RoBERTa and XLNet
-We'll continue with Day_3 work
+Part 3: Read Freezing_layers_RoBERTa
+
+Main Takeayways:
+1 Bottom layers attend broadly, while the top layers capture linguistic syntax.
+2 a batch size of 16 and fine-tune BERT for 3 epochs and RoBERTa for 10, following the original papers.
+3 For hyperparameter tuning, the best learning rate is different for each task, and all of the original authors choose 
+one between 1e-5 and 5e-5 ; thus, we perform line search over the interval with a step size of 1e-5.
+4 We find that only a fourth of the layers necessarily need to be fine-tuned to obtain 90% of the original quality.
+
+Pratcial implementation:
+https://gist.github.com/raphael0202/85580b29b27a27ddaae8d393f686f891#file-train-py-L97
 
 
+Part 4: Finetuning XLNet:
+
+A basic code to finetune XLNet
+https://snrspeaks.medium.com/fine-tuning-xlnet-model-for-text-classification-in-3-lines-of-code-1a7c3b320669
+The RoBERTa paper mentioned that the same process could be applied to XLNet
+
+
+Part 5: Research text clustering if it's interesting for our model
