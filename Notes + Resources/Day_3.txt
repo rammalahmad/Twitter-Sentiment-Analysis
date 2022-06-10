@@ -54,8 +54,9 @@ Part_3: Read Bert,RoBERTa, DistilBERT, XLNet pdf
 XLNet is larger and has better metrics than BERT
 RoBERTa outperforms both BERT and XLNet apparently. It was introduced by Facebook, needs a considerable computational power
 If we're looking for the best prediction metrics Roberta is a great choice. The downside is the computational power.
-Next step would be to search for already established models in XLNet & RoBERTa. For that i added one research papers
-E&S issues where they used the RoBERTa model. They didn't give details about the training process.
+Next step would be to search for already established models in XLNet & RoBERTa. '
+For that i added one research papers E&S issues where they used the RoBERTa model. They didn't give details about the training 
+process.
 There are some interesting info on the construction of the database (preparing a training database then using the finetuned model
 to create the dictionary). To be reviewed for later.
 
