@@ -1,0 +1,26 @@
+Goals:
+Finish the youtube videos & Try implementing the youtube code
+Research Ordinal Categorical Classification (ehen two classes are close to each other)
+Research on finetuning RoBERTa and XLNet
+Research text clustering if it's interesting for our model
+Prepare a presentation of this week's findings
+
+
+Finish the youtube videos & Try implementing the youtube code
+We cloned the repository for the finetuning of bert_case. The sentiment_analysis_with_Bert notebook provides a good
+struture to adopt for the work.
+
+
+Research Ordinal Categorical Classification (when two classes are close to each other)
+The idea: 
+Instead of having a k-classifier we use k binary classifiers each prediction the prbability of being superior to a 
+certain scale (form 1 to 5 for example)
+We finally use the rule:
+P(y=x) = P(y>=x) - P(y>=x+1)
+Could be interesting to implement in our model 
+
+
+Research on finetuning RoBERTa and XLNet
+We'll continue with Day_3 work
+
+
