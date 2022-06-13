@@ -1,0 +1,3 @@
+Goals:
+1 Read Alexander's article
+2 Start the implementation of Bert
