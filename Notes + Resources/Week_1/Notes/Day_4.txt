@@ -57,6 +57,7 @@ Explaining how to create topic identifier
 https://towardsdatascience.com/topic-modeling-with-bert-779f7db187e6
 Steps: find data -> pass that data in encoder (for that use sentence transformers: https://github.com/UKPLab/sentence-transformers) 
         -> reduce dimension (using umap for example)-> cluster the outcome (using HDBSAN for example)
+Idea: Scrap tweets about a firm from twitter then cluster them usinf BERTopic
 
 An alternative for BERTopic is Top2vec
 BERTopic vs Top2Vec: https://github.com/MaartenGr/BERTopic/issues/372
