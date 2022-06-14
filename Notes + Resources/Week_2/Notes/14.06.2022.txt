@@ -1,0 +1,29 @@
+Goals:
+1 Simple Value Chain
+2 Read the article Alexander sent on general
+
+
+Part 1: Simple Value Chain
+
+We'll start by implementing a simple value chain
+Create a small set of tweets about an enterprise -> Filter ESG ones useing FinBERT -> analyse sentiment using bert
+The model will be implemented in Simple_model.ipynb
+The model gave some interesting results, it's an optimistic start. Nonetheless, it is to be taken into consideration that 
+the model was taken as it is without ant finetuning and it was kind of tested with a very limited dataset.
+Next we'll try to look into the training process, maybe find some datasets todo so.
+
+
+Part 2: Read article Alexander sent
+ 
+Interesting article to share on linkedin with the right text to do so.
+
+
+Part 3: Research Kaggle foe training datasets
+
+Found this on kaggle: 
+https://www.kaggle.com/datasets/tunguz/envThe World Bank’s ESG Data Draft dataset provides information on 17 key sustainability
+themes spanning environmental, social, and governance categories.
+This link (along with the notebook tweets.ESG) give us an approach to collect ESG tweets for example
+https://www.kaggle.com/datasets/nederbouchnak/esg-tweets
+I'll merge the content from this notebook with the simple model to improve its performance
+The model gave interesting results, next step is to keep the research
