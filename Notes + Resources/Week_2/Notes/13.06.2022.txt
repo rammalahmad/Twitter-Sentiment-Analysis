@@ -1,3 +1,45 @@
 Goals:
 1 Read Alexander's article
 2 Start the implementation of Bert
+
+
+Part 1: Alexander's article
+
+Git associated with the document
+https://github.com/facebookresearch/contriever
+We'll try implementing it in our code to see if it's relevant to our work
+
+Vocabulary:
+
+IR: Information retrieval
+BM25: is a ranking function used by search engines to estimate the relevance of documents to a given search query. 
+It leverages lexical similarities to match queries and documents
+BEIR: BEIR is a benchmark containing diverse IR tasks. It provides a common and easy framework for evaluation 
+of an NLP-based retrieval models within the benchmark. 
+MSMARCO: A huge dataset (8.84 M corpus) created by Microsoft
+zero-shot: train a dense retriever on a large retrieval dataset such as MS MARCO, and then apply it to new domains
+Inverse Cloze Task (ICT): The goal of Cloze Task is to predict masked-out text based on its context. The prediction of 
+ICT is in the reverse direction, aiming to predict the context given a sentence. The idea consist of looking into a 
+sentence in two points of view: the first being by taking a part of the sentence and the second is the complementary
+of the first part. Thus the algorithm will learn to match them together...
+Contrastive Learning: Contrastive Learning is a Machine Learning paradigm where unlabeled data points are juxtaposed
+against each other to teach a model which points are similar and which are different.
+
+This paper reveals an alternative method than BM25 for IR based on Deep Neural Networks. Approaches based on neural networks 
+allow learning beyond lexical similarities, resulting in state-of-the-art performance.
+Is it possible to train dense retrievers without supervision, and match the performance of BM25?
+The objective of a retriever is to find relevant documents in a large collection for a given query.
+
+The document shows a method to do unsupervised finetuning on models. 
+Idea for you: use FinBERT-ESG to retrieve ESG related tweets -> Do the same approach of this paper to finetune a 
+certain model in the ESG point of view. Finally train it to do sentiment analysis.
+
+Page 17 gives practical details on the implementation process, to be reviewed once we decide to step in this field.
+We could eventually use the code that is provided in the github above to finetune our own model without writing the code
+form scratch.
+
+
+Part 2: Start the implementation of Bert
+
+
+
