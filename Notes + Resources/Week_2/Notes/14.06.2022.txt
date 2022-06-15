@@ -1,6 +1,7 @@
 Goals:
 1 Simple Value Chain
 2 Read the article Alexander sent on general
+3 Research Kaggle for training datasets
 
 
 Part 1: Simple Value Chain
@@ -18,7 +19,7 @@ Part 2: Read article Alexander sent
 Interesting article to share on linkedin with the right text to do so.
 
 
-Part 3: Research Kaggle foe training datasets
+Part 3: Research Kaggle for training datasets
 
 Found this on kaggle: 
 https://www.kaggle.com/datasets/tunguz/envThe World Bank’s ESG Data Draft dataset provides information on 17 key sustainability
