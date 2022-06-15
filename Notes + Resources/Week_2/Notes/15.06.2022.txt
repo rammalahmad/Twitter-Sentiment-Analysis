@@ -1,0 +1,31 @@
+Goals for the next three days:
+
+1 Read Dan's article and understand the idea of clustering embeddings
+2 Try implementing BERTopic to cluster all the relevant topics about an enterprise
+3 Read amirmokhtar article (article about sentiment analysis in twitter with very inetresting approach on scrapping and analysis)
+4 Get a sense of what FLASK is
+5 Do some research about database
+6 Research preprocessing
+
+Other Resources:
+Explaining the whole process, it's a good start, to be checked later today
+https://monkeylearn.com/blog/sentiment-analysis-of-twitter/
+
+Part 1: Read Dan's article and understand the idea of clustering embeddings
+
+Dan's article is quite complicated, to be reviewed later since it's just an alternative to K-means
+Good introduction to embeddings:
+https://towardsdatascience.com/neural-network-embeddings-explained-4d028e6f0526
+BERT's embedding has a better performance than word2vec which is limited
+I added a line that extracts the embedding from model in the sent_analysis.ipynb
+
+
+Part 2: Try implementing BERTopic to cluster all the relevant topics about an enterprise
+
+The local implementation is not working for some packages issues, thus i'll try doing it on colab
+This is a great reference explaining the BERTopic function and its implementation
+https://colab.research.google.com/drive/1FieRA9fLdkQEGDIMYl0I3MCjSUKVF8C-?usp=sharing#scrollTo=IVpvT4bA6KiN
+To be reviewed tomorrow how to change embedding in BERTopic:
+https://colab.research.google.com/drive/18arPPe50szvcCp_Y6xS56H2tY0m-RLqv?usp=sharing
+For now we have a rather simple implementation of BERTopic in our repository
+
