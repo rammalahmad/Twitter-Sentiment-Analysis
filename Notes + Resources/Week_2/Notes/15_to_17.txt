@@ -1,0 +1,69 @@
+Goals for the next three days:
+
+1 Read Dan's article and understand the idea of clustering embeddings
+2 Try implementing BERTopic to cluster all the relevant topics about an enterprise
+3 See how other resources have done sentiment analysis on twitter before you to get a sense of that
+4 Read amirmokhtar article (article about sentiment analysis in twitter with very inetresting approach on scrapping and analysis)
+5 Try different embeddings with the Kmeans
+6 Do some research about database
+7 Get a sense of what FLASK is
+8 Research preprocessing
+
+
+
+Part 1: Read Dan's article and understand the idea of clustering embeddings
+
+Dan's article is quite complicated, to be reviewed later since it's just an alternative to K-means
+Good introduction to embeddings:
+https://towardsdatascience.com/neural-network-embeddings-explained-4d028e6f0526
+BERT's embedding has a better performance than word2vec which is limited
+I added a line that extracts the embedding from model in the sent_analysis.ipynb
+
+
+Part 2: Try implementing BERTopic to cluster all the relevant topics about an enterprise
+
+The local implementation is not working for some packages issues, thus i'll try doing it on colab
+This is a great reference explaining the BERTopic function and its implementation
+https://colab.research.google.com/drive/1FieRA9fLdkQEGDIMYl0I3MCjSUKVF8C-?usp=sharing#scrollTo=IVpvT4bA6KiN
+To be reviewed tomorrow how to change embedding in BERTopic:
+https://colab.research.google.com/drive/18arPPe50szvcCp_Y6xS56H2tY0m-RLqv?usp=sharing
+For now we have a rather simple implementation of BERTopic in our repository
+
+
+Part 3: See how other resources have done sentiment analysis on twitter before you to get a sense of that
+
+Explaining the whole process, it's a good start, to be checked later today
+https://monkeylearn.com/blog/sentiment-analysis-of-twitter/
+Basically it gave us the whole steps that were discussed earlier (preprocessing until sentiment analysis)
+Twitter’s way of talking is a lot more informal and specific than generic datasets. There is also the different 
+sentiment in specific words that differs from the mean; examples of the latter are: bull, sell, buy…
+Explains basically the same old procedure 
+https://medium.com/@erik.terres.es/fine-tuning-bert-for-sentiment-analysis-on-non-labeled-twitter-data-1fd8951fbbd4
+
+Using word2vec k-means in order to cluster sentiment between positive and negative.
+https://towardsdatascience.com/unsupervised-sentiment-analysis-a38bf1906483
+https://github.com/rafaljanwojcik/Unsupervised-Sentiment-Analysis
+His repository is cloned
+I'll try making something out of it. We'll try doing some clustering using word2Vec and try to labelized the sentiment 
+of the outcome.
+
+
+Part 4 Read amirmokhtar article
+
+Which aspects of sustainability do the consumers of cell phones often tweet?
+
+Three procedures from various intellectual foun- dations, which are entitled as Descriptive analysis
+After collecting the initial data using Twitter search APIs, they used statistical analysis, text mining, and Sentiment 
+analysis methods to analyze the data taken from this social me- dia as well as showing the relevant patterns and information 
+and understanding the customers’ perceptions.
+The outcome was that as we get more data from the Streaming API, the contextual analysis is the most reliable.
+In conclusion:
+A very useful document whith a lot of interesting references.
+To be reviewed later when implementing the scraping efficiently
++ there's a reference chae_2015 to be reviewed for that same purpose
+
+
+Part 6 Do some research about database
+
+Dataset about climate change sentiment
+https://www.kaggle.com/datasets/deffro/the-climate-change-twitter-dataset?select=disasters.csv
