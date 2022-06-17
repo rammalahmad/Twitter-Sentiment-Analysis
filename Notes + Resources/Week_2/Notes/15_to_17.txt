@@ -10,6 +10,24 @@ Goals for the next three days:
 8 Research preprocessing
 
 
+Topic modeling vs clustering:
+
+The purpose of topic modeling methods is to discover the latent themes (topics) assumed to have generated the documents of a 
+corpus. Topic modeling methods are built on the distributional hypothesis, suggesting that similar words occur in similar 
+contexts. To this end, they assume a generative process (a sequence of steps), which is a set of assumptions that describe 
+how the documents are generated. Given the assumptions of the generative process, inference is done, which results in 
+learning the latent variables of the model. For instance, for Latent Dirichlet Allocation, this is the per-topic document 
+distributions and the per-word document distributions. In this sense, a document can be represented by its per-topic 
+distribution (doc1 = 0.3×Sports + 0.7×Cinema). This later can be seen as a soft clustering approach, i.e., doc1 belongs 30% 
+in cluster Sports and 70% in Cinema. But topic models are not solely clustering methods, as can also been used for 
+understanding, exploring, visualizing a collection.
+
+On the other hand, clustering methods aim at partitioning data into coherent groups. Of course, what is coherent and how 
+the partitioning is performed differs between the various clustering algorithms. The distance between the data instances 
+is central for clustering methods and for this the instances can be represented in various ways: for documents this can 
+be term frequencies (tf), tf-idf, and even with the per-document topic distributions learned by topic models.
+
+
 
 Part 1: Read Dan's article and understand the idea of clustering embeddings
 
@@ -44,8 +62,8 @@ Using word2vec k-means in order to cluster sentiment between positive and negati
 https://towardsdatascience.com/unsupervised-sentiment-analysis-a38bf1906483
 https://github.com/rafaljanwojcik/Unsupervised-Sentiment-Analysis
 His repository is cloned
-I'll try making something out of it. We'll try doing some clustering using word2Vec and try to labelized the sentiment 
-of the outcome.
+The file word2vec in code is a implementation of the process explained above. It failed to give interesting results 
+though the git repository was promising.
 
 
 Part 4 Read amirmokhtar article
@@ -61,6 +79,15 @@ In conclusion:
 A very useful document whith a lot of interesting references.
 To be reviewed later when implementing the scraping efficiently
 + there's a reference chae_2015 to be reviewed for that same purpose
+
+
+Part 5: Try different embeddings with the Topic modeling
+
+A very nice recapitulatif on embeddings:
+https://towardsdatascience.com/introduction-to-word-embeddings-4cf857b12edc
+
+
+Part 6: Preprocessing is a priority ( do some research in your pipeline from scratch)
 
 
 Part 6 Do some research about database
