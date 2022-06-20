@@ -1,0 +1,46 @@
+Tasks:
+
+1 Find a multi-ling model
+2 Learn how to find the embedding space
+3 Find keywords E,S,G and find their respective tensor in the embedding
+4 Take a tweet and place it in the embedding space
+5 Find cosine similarity with E,S and G
+
+Sources:
+Very rich site which plenty of resources to be checked
+https://paperswithcode.com/task/sentence-embeddings/latest?page=3
+Text representation model:
+https://simpletransformers.ai/docs/text-rep-model/#representationmodel
+Sentence-transformers:
+https://www.sbert.net/
+
+Task 1: Find a multi-ling model
+
+
+Task 2: Learn how to find the embedding space
+
+We downloaded a file extracting_word_embedding to be checked since it seems like it could be used with GPT-2
+and XLNet
+
+Finetuning the embedding to see later:
+https://towardsdatascience.com/improving-sentence-embeddings-with-bert-and-representation-learning-dfba6b444f6b
+
+
+Read paper on sentecnce Bert:
+The typical approach on Bert yields bad results according to this paper.
+That's why they derived SBERT that performs better than BERT in terms of extracting_word_embedding
+A large disadvantage of the BERT network structure is that no independent sentence embeddings
+are computed, which makes it difficult to derive sentence embeddings from BERT.
+
+Found sentence-transformer library seems very functional and should be put to test right away
+
+I added a peper on how to make a monolingual model multilingual using knowledge distillation
+ So now we have two possible models (Representationmodel oe sentence-transformers)
+ sentence-transformers seems to be more adapted to the task at hand
+
+Du coup on a fait une petite implémentation simple des Embeddings_ESG avec un modèle multilingual
+Les resultats étaient vraiment pas mal en tant que resultats premiers.
+En tant que prochaines étapes il faut voir comment améliorer notre modèle plus en finetunant sur 
+des bases de données trop orientées ESG ou bien en essayant une approche différente que la comparaisant à la 
+moyenne des vecteurs dans chaque dictionnaire...
+Il faut aussi trouver un seuil au dessus lequel la phrase doesn't belong to any category.
