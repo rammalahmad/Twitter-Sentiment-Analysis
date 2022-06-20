@@ -65,6 +65,8 @@ His repository is cloned
 The file word2vec in code is a implementation of the process explained above. It failed to give interesting results 
 though the git repository was promising.
 
+Check word2vec documentation :
+https://medium.com/nearist-ai/word2vec-tutorial-the-skip-gram-model-c7926e1fdc09
 
 Part 4 Read amirmokhtar article
 
@@ -85,7 +87,15 @@ Part 5: Try different embeddings with the Topic modeling
 
 A very nice recapitulatif on embeddings:
 https://towardsdatascience.com/introduction-to-word-embeddings-4cf857b12edc
+An excellent article about all the clustering and topic modeling possibilities:
+https://towardsdatascience.com/clustering-sentence-embeddings-to-identify-intents-in-short-text-48d22d3bf02e
+Create your own topic modeling:
+https://towardsdatascience.com/topic-modeling-with-bert-779f7db187e6
+Tempting to use with ESG-Bert
 
+To be continued...
+Then we'll implement Top2Vec
+Then we'll try different embeddings
 
 Part 6: Preprocessing is a priority ( do some research in your pipeline from scratch)
 
