@@ -1,0 +1,22 @@
+Tasks:
+
+Finish organizing the work into different files
+Start looking into twitter's api
+Run some tests on the company at hand
+
+deepl to translate
+
+A lot of information is contained in these tweets
+
+Another model to consider in esg filtering:
+https://huggingface.co/cardiffnlp/twitter-xlm-roberta-base
+
+
+Nombre de tweets
+% en francais pu anglais
+esg score
+Nombre de tweet négatif et positif
+
+Evolution over time year by year
+
+Market study on the scale of tweets to be considered by enterprise

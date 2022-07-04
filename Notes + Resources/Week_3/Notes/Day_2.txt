@@ -1,0 +1,33 @@
+Tasks:
+
+1 Continue the implementation of the embeddings space while adding tweets
+2 Learn preprocessing to experiment properly
+3 Find a hyperparameter above which the tweet is classified as none
+4 Read Alexander's articles
+5 Research finetuning
+
+
+Part 1 : Continue the implementation of the embeddings space while adding tweets
+
+I combined the twitter scraping in the notebook to see what can we expect in terms of results.
+The results were relevant however this is not really useful for now since we still can't filter out the tweets
+that have nothing to do with ESG. 
+In order to do so more tests should be done on clean data so we could find some threshold below which the tweets
+will be labeled as none.
+
+
+
+Part 2: Learn preprocessing to experiment properly
+
+An interesting implementation for preprocessing
+https://towardsdatascience.com/basic-tweet-preprocessing-in-python-efd8360d529e
+The implementation is almost done and it's looking good
+Next step would be to decide how to study this tweets efficiently
+Useful library:
+https://github.com/s/preprocessor
+Now that the data is preprocessed we could try to see if the text itself or just the hashtag correspond to our 
+needs
+The segmented # and the keywords are helpful for visualization
+The cleaned text and the hashtags will serve for ESG classification
+the url could be accessed by our api to see if the content is relevant to esg or not
+
