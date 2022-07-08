@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+{% if tables %}
+    {% for table in tables %}
+                <!-- {{titles[loop.index]}} -->
+                {{ table|safe }}
+    {% endfor %}   
+{% endif %}
+
+<a href="{{url_for('scrap')}}" >Scrap</a>
+{% endblock %}
