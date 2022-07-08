@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<form action="/filter" method="post">
+    Gram-Schmidt-Ahmad Model<input type="radio" name="filter" value="GS">
+    Alexander Model<input type="radio" name="filter" value="Mean">
+    FinBERT Model<input type="radio" name="filter" value="Bert">
+    <input type="submit" value="Filter">
+</form>
+{% if l %}
+    {% print(l) %}
+{% endif %}
+
+{% endblock %}

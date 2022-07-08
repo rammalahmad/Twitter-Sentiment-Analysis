@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<center>
+    <form action="/" method="post">
+    <h2>Your Tweet</h2>
+    <input type="text" placeholder="Tweet" name="query">
+    <!-- <input type="submit" value="Search"> -->
+    
+    <h2>Language</h2>
+    French<input type="radio" name="lang" style="vertical-align: middle" value="fr" checked="true">
+    <br/>
+    English<input type="radio" name="lang" style="vertical-align: middle" value="en">
+    <br/>
+
+    <h2>ESG Model</h2>
+    Alexander Model<input type="checkbox" style="vertical-align: middle" name="filter" value="Mean" checked="true">
+    <br/>
+    FinBERT Model<input type="checkbox" style="vertical-align: middle" name="filter" value="Bert" checked="true">
+    <br/>
+    Gram-Schmidt-Ahmad Model<input type="checkbox" style="vertical-align: middle" name="filter" value="GS" checked="true">
+    <br/>
+    <br/>
+    <br/>
+    <input type="submit" name="btn" value="Classify">
+</form>
+    <br/>
+
+    {% if label %}
+
+
+        {% set models = ["Alexander", "FinBERT", "Gram-Schmidt-Ahmad"] %}
+        {% for i in range(3) %}
+            {% if label[i] %}
+                <li>{{models[i]}} says the label is: {{label[i]}}</li>
+            {% endif %}
+        {% endfor%}
+
+
+        <br/>
+        <br/>
+        <br/>
+        <form action="/{{id}}" method="post">
+            <h2>What's the true label?</h2>
+            Environmental<input type="radio" style="vertical-align: middle" name="tlabel" value="E" checked="true">
+            <br/>
+            Social<input type="radio" style="vertical-align: middle" name="tlabel" value="S">
+            <br/>
+            Governance<input type="radio" style="vertical-align: middle" name="tlabel" value="G">
+            <br/>
+            Not ESG<input type="radio" style="vertical-align: middle" name="tlabel" value="N">
+            <br/>
+            <br/>
+            <br/>
+        <input type="submit" name="btn" value="Finish">
+
+
+    {% endif %}
+</center>
+
+
+{% endblock %}
