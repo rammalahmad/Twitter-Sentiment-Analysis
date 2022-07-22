@@ -113,17 +113,21 @@ class Mean_model:
       df= df.reset_index(drop=True)
       return  df
 
-def mean_esg(text:str, lang:str, threshold:float=0.3):
-      filter = Mean_model(lang, threshold)
+
+filter_en = Mean_model("en", 0.3)
+filter_fr = Mean_model("fr", 0.3)
+
+def mean_esg(text:str, lang:str):
+      if lang == "fr":
+        filter = filter_fr
+      else:
+        filter = filter_en
       return filter.esg_class(text)
 
 
 
-class GS_model:
-    def __init__(self, lang: str):
-        self.lang = lang
-        self.Dics = dics(lang)
 
+class GS_model:
     def gs(self, X: torch.tensor) -> torch.tensor:
         '''
         # Info
@@ -186,11 +190,29 @@ class GS_model:
 
 
 
+
+filter = GS_model()
+Dics = dics("fr")
+E_plane_fr = filter.gs(vect(Dics[0]))
+S_plane_fr = filter.gs(vect(Dics[1]))
+G_plane_fr = filter.gs(vect(Dics[2]))
+planes_fr = [E_plane_fr, S_plane_fr, G_plane_fr]
+
+Dics = dics("en")
+E_plane_en = filter.gs(vect(Dics[0]))
+S_plane_en = filter.gs(vect(Dics[1]))
+G_plane_en = filter.gs(vect(Dics[2]))
+planes_en = [E_plane_fr, S_plane_fr, G_plane_fr]
+
 def gs_esg(text:str, lang:str='en', threshold:float=0.722):
-    filter = GS_model(lang)
-    E_plane = filter.gs(vect(filter.Dics[0]))
-    S_plane = filter.gs(vect(filter.Dics[1]))
-    G_plane = filter.gs(vect(filter.Dics[2]))
+    if lang == "fr":
+          E_plane = planes_fr[0]
+          S_plane = planes_fr[1]
+          G_plane = planes_fr[2]
+    else:
+          E_plane = planes_en[0]
+          S_plane = planes_en[1]
+          G_plane = planes_en[2] 
     label_dic = {
         'E': filter.forward(text, E_plane),
         'S': filter.forward(text, S_plane),
