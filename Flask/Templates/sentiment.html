@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% if step == "Measure" %}
+    <center>
+        <form action="/sentiment/{{id}}" method="post">
+
+        <h2>Sentiment Analysis Model</h2>
+        RoBERTa<input type="checkbox" style="vertical-align: middle" name="filter" value="RoBERTa" checked="true">
+        <br/>
+        BERT Base<input type="checkbox" style="vertical-align: middle" name="filter" value="BertBase" checked="true">
+        <br/>
+        <br/>
+        <br/>
+        <input type="submit" name="btn" value="Measure Sentiment">
+    </form>
+        <br/>
+        
+        {%if warning%}
+        <h2>Please choose at least one model</h2>
+        {%endif%}
+
+
+
+    </center>
+
+{% elif step == "Truth" %}
+    <center>
+        {% set models = ["RoBERTa", "BERT Base"] %}
+        {% for i in range(2) %}
+            {% if scores[i] %}
+                <li>{{models[i]}} says the score is: {{scores[i]}}</li>
+            {% endif %}
+        {% endfor%}
+
+        <form action="/sentiment/{{id}}" method="post">
+        <h2>What's the true Sentiment?</h2>
+        Positive<input type="radio" style="vertical-align: middle" name="tsent" value="Pos" checked="true">
+        <br/>
+        Negative<input type="radio" style="vertical-align: middle" name="tsent" value="Neg">
+        <br/>
+        Neutral<input type="radio" style="vertical-align: middle" name="tsent" value="Neu">
+        <br/>
+        <br/>
+        <br/>
+        <input type="submit" name="btn" value="Finish">
+    </center>
+{% endif %}
+{% endblock %}

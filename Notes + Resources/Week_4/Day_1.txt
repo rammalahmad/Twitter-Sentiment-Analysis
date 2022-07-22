@@ -16,7 +16,3 @@ Nombre de tweets
 % en francais pu anglais
 esg score
 Nombre de tweet négatif et positif
-
-Evolution over time year by year
-
-Market study on the scale of tweets to be considered by enterprise

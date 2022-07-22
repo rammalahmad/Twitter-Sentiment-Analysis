@@ -18,6 +18,7 @@ from nltk.corpus import stopwords
 from nltk.stem import LancasterStemmer, WordNetLemmatizer
 from nltk.tokenize import TweetTokenizer
 from spellchecker import SpellChecker
+from deep_translator import GoogleTranslator
 
 nltk.download
 nltk.download('wordnet')
@@ -39,7 +40,7 @@ class preprocess:
         return re.findall("\$([a-zA-Z0-9_]{1,50})", x)
 
       def collect_urls(text):
-        urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', tweet)
+        urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', text)
         result =[]
         for url in urls:
           try:
@@ -84,8 +85,5 @@ class preprocess:
         for word in misspelled:
           words.remove(word)
 
-
-
-
-      
-  
+      def translate(text:str, lang: str) -> str:
+          GoogleTranslator(source='auto', target=lang).translate(text)

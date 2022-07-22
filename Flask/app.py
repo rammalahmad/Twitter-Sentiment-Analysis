@@ -1,74 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for
 import sys
-import pandas as pd
-from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy_report import Reporter 
-from datetime import datetime
-
-sys.path.append('C:/Users/User/Desktop/Ahmad/Stages/SurfMetrics/Git/Code/First_Full_model')
-
-app=Flask(__name__,template_folder='templates')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tweets.db'
-
-#Initialize the database
-db = SQLAlchemy(app)
-
-#Create db model
-class Tweets(db.Model):
-      id = db.Column(db.Integer, primary_key= True)
-      tweet = db.Column(db.String(1000),nullable=False)
-      lang = db.Column(db.String(10),nullable=False)
-      True_label = db.Column(db.String(10),nullable=True)
-      FB_label = db.Column(db.String(10),nullable=True)
-      Mean_label = db.Column(db.String(10),nullable=True)
-      GS_label = db.Column(db.String(10),nullable=True)
-      date_created = db.Column(db.DateTime, default= datetime.utcnow)
-      #Create a function to return a string when we add something
-      def __repr__(self):
-            return '<tweet %r>' % self.id
-
-
-# Manual trials
 
 from ESG_filters import gs_esg, mean_esg
 from Finbert_esg_filter import finbert_esg
+from sentiment_analysis import uncased_score, rob_score
+from db_init import db, app, Tweets
 
-@app.route('/<int:id>', methods=['GET','POST'])
-def manual(id):
-      tweet = Tweets.query.get_or_404(id)
-      if request.method == "POST":
-            if request.form.get("btn")=="Classify":
-                  query = request.form.get('query')
-                  models = request.form.getlist('filter')
-                  lang = request.form.get('lang')
-
-                  if 'Mean' in models:
-                        resmean = mean_esg(query, lang)
-                  else:
-                        resmean = None 
-                  if "Bert" in models:
-                        resbert = finbert_esg(query, lang)
-                  else:
-                        resbert = None
-                  if "GS" in models:
-                        resgs = gs_esg(query, lang)
-                  else: 
-                        resgs = None
-                  new_tweet = Tweets(tweet=query, lang=lang, FB_label=resbert, Mean_label=resmean, GS_label=resgs)
-
-                  db.session.add(new_tweet)
-                  db.session.commit()
-                  return redirect(url_for('manual', id=new_tweet.id))
-
-            elif request.form.get("btn")=="Finish":
-                  true_label  = request.form.get('tlabel')
-                  tweet.True_label = true_label
-                  db.session.commit()
-                  return redirect(url_for('manual_1'))
-      else:
-            results = [tweet.Mean_label, tweet.FB_label, tweet.GS_label]
-            return render_template('manual.html', label = results, id=id)
-
+# sys.path.append('C:/Users/User/Desktop/Ahmad/Stages/SurfMetrics/Git/Code/First_Full_model')
 
 @app.route('/', methods=['GET','POST'])
 def manual_1():
@@ -89,18 +28,79 @@ def manual_1():
                   resgs = gs_esg(query, lang)
             else: 
                   resgs = None
-            new_tweet = Tweets(tweet=query, lang=lang, FB_label=resbert, Mean_label=resmean, GS_label=resgs)
+            if ((resmean == None) & (resbert == None) & (resgs == None)):
+                  return render_template('manual.html', step = "Measure", warning = True)
+            new_tweet = Tweets(tweet_text=query, lang=lang, FB_label=resbert, Mean_label=resmean, GS_label=resgs)
             db.session.add(new_tweet)
             db.session.commit()
-            return redirect(url_for('manual', id=new_tweet.id))
+            results = [new_tweet.Mean_label, new_tweet.FB_label, new_tweet.GS_label]
+            return render_template('manual.html', label = results, id= new_tweet.id, step = "Truth")
       else:
-            return render_template('manual.html')
+            return render_template('manual.html', step = "Measure", warning = None)
+
+
+
+@app.route('/<int:id>', methods=['GET','POST'])
+def manual(id):
+      tweet = Tweets.query.get_or_404(id)
+      if request.method == "POST":
+            true_label  = request.form.get('tlabel')
+            tweet.True_label = true_label
+            db.session.commit()
+            if true_label == "N":
+               return redirect(url_for('thanks'))   
+            return render_template('sentiment.html', id=id, step="Measure")
+      else:
+            results = [tweet.Mean_label, tweet.FB_label, tweet.GS_label]
+            return render_template('manual.html', label = results, id=id, step = "Truth")
+
+
+
+@app.route('/sentiment/<int:id>', methods=['GET','POST'])
+def sentiment(id):
+      tweet = Tweets.query.get_or_404(id)
+      if request.method == "POST":
+            if request.form.get("btn")=="Measure Sentiment":
+                  text = tweet.tweet_text
+                  models = request.form.getlist('filter')
+                  if 'RoBERTa' in models:
+                        resro = rob_score(text)
+                  else:
+                        resro = None 
+                  if "BertBase" in models:
+                        rescase = uncased_score(text)
+                  else:
+                        rescase = None
+                  if ((resro == None) & (rescase == None)):
+                      return render_template('sentiment.html', id=id, step="Measure", warning=True)
+                  result = [resro, rescase]
+                  tweet.RoBERTa_sent = resro
+                  tweet.BERT_uncased_sent = rescase
+                  db.session.commit()
+                  return render_template('sentiment.html', id=id, step="Truth", scores= result)
+            elif request.form.get("btn")=="Finish":
+                  true_sent  = request.form.get('tsent')
+                  tweet.True_sent = true_sent
+                  db.session.commit()
+                  return redirect(url_for('thanks'))
+      else:
+            return render_template('sentiment.html', id=id, step="Measure", warning=None)
+
+
+@app.route('/thanks', methods=['GET','POST'])
+def thanks():
+      if request.method == "POST":
+            return redirect(url_for('manual_1'))
+      else:
+            return render_template('thanks.html')
 
 
 @app.route('/db')
 def listOfPersons():
       reportTitle = "Tweets Database"
-      sqlQuery = "SELECT id as 'id', tweet as 'Text', lang as'Language', True_label as 'True Label', FB_label as 'FinBERT', Mean_label as 'Mean Model', GS_label as 'GramSchmidt'   FROM Tweets"
+      sqlQuery = "SELECT id as 'id', tweet_text as 'Text', lang as'Language', True_label as 'True Label',\
+       FB_label as 'FinBERT', Mean_label as 'Mean Model', GS_label as 'GramSchmidt', True_sent as 'True Sentiment',\
+      RoBERTa_sent as 'RoBERTa score', BERT_uncased_sent as 'BERT Base score' FROM Tweets"
       fontName = "Arial"
       headerRowBackgroundColor = '#ffeeee'
       evenRowsBackgroundColor = '#ffeeff'

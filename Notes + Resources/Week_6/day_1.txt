@@ -1,0 +1,23 @@
+Idea: Do supervised Umap training on the dictionnary of E,S and G to see what results we get
+study tsne vs umap
+
+
+Lowering the embedding dimensionalities is optional but can save runtime (more details below).
+BERTopic is a good option or not?
+
+Reducing dimensionality before clustering has a negligible impact on performance
+
+Steps:
+Multiple embeddings extraction
+2 or 3 methods max: UMAP + TFIDF, or the paper in the resources
+https://towardsdatascience.com/clustering-contextual-embeddings-for-topic-model-1fb15c45b1bd
+https://huggingface.co/princeton-nlp/unsup-simcse-bert-base-uncased?text=i+would+like+some+food+please
+https://github.com/hyintell/topicx
+
+Calculer la matrice de distance
+Db scan est plus intéressant que 
+
+yOU COULD CREATE YOUR OWN embeddings and feed it to BERTopic
+Use the guided topic modeling in BERTopic using the dictionnaries we have at hand
+
+Try semi-supervised learning

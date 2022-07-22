@@ -90,7 +90,7 @@ class scraper:
         We get in return a dataframe of the tweets
         '''
         params = query_p(query, maxResults, fromDate, toDate)
-        response = requests.request("GET", url = self.search_url , headers = self.headers, params = params)
+        response = requests.request("GET", url = self.search_url, headers=self.headers, params = params)
         if response.status_code != 200:
             raise Exception(response.status_code, response.text)
         json_response = response.json()

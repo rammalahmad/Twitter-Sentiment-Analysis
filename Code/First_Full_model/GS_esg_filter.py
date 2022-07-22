@@ -102,3 +102,21 @@ class GS_model:
             return 'True'
         else:
             return 'False'
+
+
+
+def gs_esg(text:str, lang:str='en', threshold:float=0.722):
+    filter = GS_model(lang)
+    E_plane = filter.gs(vect(filter.Dics[0]))
+    S_plane = filter.gs(vect(filter.Dics[1]))
+    G_plane = filter.gs(vect(filter.Dics[2]))
+    label_dic = {
+        'E': filter.forward(text, E_plane),
+        'S': filter.forward(text, S_plane),
+        'G': filter.forward(text, G_plane)
+        }
+    sort_orders = sorted(label_dic.items(), key=lambda x: x[1], reverse=True)
+    if sort_orders[0][1]<threshold:
+        return 'None'
+    else:
+        return sort_orders[0][0]
