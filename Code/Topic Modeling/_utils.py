@@ -24,18 +24,20 @@ import numpy as np
 class Embedder:
 
     def __init__(self, index:int = 0):
+        self.index=index
         if index == 0:
             from ESG_BERT import model, tokenizer
             self.model = model
             self.tokenizer = tokenizer
-        # elif index == 1:
-        #     self.model = 
+        elif index == 1:
+            from sbert import model
+            self.model = model
         
 
     def embed(self, documents: List[str]) -> np.ndarray:
-        embeddings = []
-        for document in documents:
-            tokens = self.tokenizer(document, return_tensors='pt')
+        if self.index == 0:
+            tokens = self.tokenizer(documents, return_tensors='pt', padding=True)
             output = self.model(**tokens)
-            embeddings += [output.logits[0].detach().numpy()]
-        return np.vstack(embeddings)
+            return output.logits.detach().numpy()
+        elif self.index == 1:
+            return np.array(self.model.encode(documents))

@@ -26,7 +26,7 @@ from _utils import Embedder
 
 class ESG_Topic:
 
-    def __init__(self, lang:str = "en", top_n_words: int = 10, min_topic_size: int = 10, nr_topics: int = 10, model_number: int = 0, dim_size: int = 50):
+    def __init__(self, embeddings: np.ndarray = None, lang: str = "en", top_n_words: int = 10, min_topic_size: int = 10, nr_topics: int = 10, model_number: int = 0, dim_size: int = 50):
 
         if lang == "fr":
             self.dic = fr_dic
@@ -38,6 +38,7 @@ class ESG_Topic:
         self.top_n_words = top_n_words
         self.nr_topics = nr_topics
         self.embedder = Embedder(model_number)
+        self.embeddings = embeddings
         self.min_topic_size = min_topic_size
         self.vectorizer_model = CountVectorizer()
     
@@ -53,14 +54,14 @@ class ESG_Topic:
         
     def fit_transform(self, documents):
         
-        # documents = self._preprocess_text(documents)
-        embeddings = self._extract_embeddings(documents)
-
+        documents = self._preprocess_text(documents)
+        if self.embeddings is None:
+            self.embeddings = self._extract_embeddings(documents)
         my_df = pd.DataFrame({"Document": documents,
                                   "ID": range(len(documents)),
                                   "ESG_label": None,
                                   "Topic": None})
-
+        embeddings = self.embeddings
         my_df["ESG_label"], embeddings = self._semi_supervised_modeling(embeddings)
 
         embeddings = self._reduce_dimensionality(embeddings)
@@ -71,7 +72,10 @@ class ESG_Topic:
 
 
     def _semi_supervised_modeling(self, embeddings: np.ndarray) -> Tuple[List[int], np.array]:
-        """Apply Guided Topic Modeling
+        """
+        # Info
+        ---
+        Apply Guided Topic Modeling
 
         We transform the seeded topics to embeddings using the
         same embedder as used for generating document embeddings.
@@ -84,10 +88,12 @@ class ESG_Topic:
         than any of the topics, it gets the -1 label and is
         thereby not included in UMAP.
 
-        Arguments:
+        # Arguments
+        ---
             embeddings: The document embeddings
 
-        Returns
+        # Returns
+        ---
             y: The labels for each seeded topic
             embeddings: Updated embeddings
         """
@@ -95,18 +101,18 @@ class ESG_Topic:
         # Create embeddings from the seeded topics
         seed_labels_list = [self._extract_embeddings(keywords).mean(axis=0) for keywords in self.dic]
 
-        seed_topic_embeddings = np.vstack([seed_topic_embeddings, embeddings.mean(axis=0)])
+        seed_labels_list = np.vstack([seed_labels_list, embeddings.mean(axis=0)])
 
         # Label documents that are most similar to one of the seeded topics
-        sim_matrix = cosine_similarity(embeddings, seed_topic_embeddings)
+        sim_matrix = cosine_similarity(embeddings, seed_labels_list)
         y = [np.argmax(sim_matrix[index]) for index in range(sim_matrix.shape[0])]
-        y = [val if val != len(seed_labels_list) else -1 for val in y]
+        y = [val if val != (len(seed_labels_list)-1) else -1 for val in y]
 
         # Average the document embeddings related to the seeded topics with the
         # embedding of the seeded topic to force the documents in a cluster
         for seed_topic in range(len(seed_labels_list)):
             indices = [index for index, topic in enumerate(y) if topic == seed_topic]
-            embeddings[indices] = np.average([embeddings[indices], seed_topic_embeddings[seed_topic]], weights=[3, 1])
+            embeddings[indices] = np.average([embeddings[indices], seed_labels_list[seed_topic]], weights=[3, 1])
         return y, embeddings    
 
 
