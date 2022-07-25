@@ -21,3 +21,20 @@ yOU COULD CREATE YOUR OWN embeddings and feed it to BERTopic
 Use the guided topic modeling in BERTopic using the dictionnaries we have at hand
 
 Try semi-supervised learning
+
+https://medium.com/tech-that-works/maximal-marginal-relevance-to-rerank-results-in-unsupervised-keyphrase-extraction-22d95015c7c5
+An idea would be to look into hashtags 
+Try 
+CLS or Mean model in huggingface
+
+Use Flask
+Ressortir les tweets par topic
+FNSEA
+Reduire le nombre des clusters -> Les
+
+Sequence output is the sequence of hidden-states (embeddings) at the output of the last layer of the BERT model. It includes the embedding 
+of the [CLS] token. Hence, for the sentence "You are on Stackoverflow", it gives 5 embeddings: one embedding for each of the four words 
+(assuming the word "Stackoverflow" was tokenized into a single token) along with the embedding of the [CLS] token. Pooled output is the 
+embedding of the [CLS] token (from Sequence output), further processed by a Linear layer and a Tanh activation function. The Linear layer 
+weights are trained from the next sentence prediction (classification) objective during pretraining. For further details, please refer to 
+the BERT original paper.

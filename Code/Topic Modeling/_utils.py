@@ -32,12 +32,23 @@ class Embedder:
         elif index == 1:
             from sbert import model
             self.model = model
+        elif index == 2:
+            from xlm_roberta import model, tokenizer
+            self.model = model
+            self.tokenizer = tokenizer
         
 
     def embed(self, documents: List[str]) -> np.ndarray:
         if self.index == 0:
+
             tokens = self.tokenizer(documents, return_tensors='pt', padding=True)
             output = self.model(**tokens)
             return output.logits.detach().numpy()
+            
         elif self.index == 1:
             return np.array(self.model.encode(documents))
+
+        elif self.index == 2:
+            tokens = self.tokenizer(documents, return_tensors='pt')
+            output = self.model(**tokens)
+            return output["pooler_output"].detach().numpy()

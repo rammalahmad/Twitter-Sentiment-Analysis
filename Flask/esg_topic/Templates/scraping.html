@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<form action="/scraping" method="post">
+    Keywords: <input type="text" name="scrap">
+    Size: <input type="number" name="scrap">
+    Language: <input type="text" name="scrap">
+    <input type="submit" value="Search">
+</form>
+
+<!-- {% if l %}
+    <a href="{{url_for('filter')}}" >Preprocess</a>
+{% endif %}
+<a href="{{url_for('visualize')}}" >Data</a> -->
+
+{% endblock %}
