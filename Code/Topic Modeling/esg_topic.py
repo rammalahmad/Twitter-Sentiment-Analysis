@@ -26,31 +26,45 @@ from _utils import Embedder
 
 class ESG_Topic:
 
-    def __init__(self, embeddings: np.ndarray = None, lang: str = "en", top_n_words: int = 10, min_topic_size: int = 10, nr_topics: int = 10, model_number: int = 0, dim_size: int = 50):
+    def __init__(self, embeddings: np.ndarray = None,
+                model_number: int = 0,
+                semi_sup: int = 0,
+                lang: str = "en",  
+                top_n_words: int = 10, 
+                cluster_model: int = 0,
+                min_topic_size: int = 20,
+                nb_clusters: int = 15,
+                dim: int = 50):
 
-        if lang == "fr":
-            self.dic = fr_dic
-        else:
-            self.dic = en_dic
+        if semi_sup == 1:
+            if lang == "fr":
+                self.dic = fr_dic
+            else:
+                self.dic = en_dic
 
-        self.topics = None
-        self.topic_sizes = None
-        self.top_n_words = top_n_words
-        self.nr_topics = nr_topics
+        
         self.embedder = Embedder(model_number)
         self.embeddings = embeddings
         self.min_topic_size = min_topic_size
-        self.vectorizer_model = CountVectorizer()
+        self.cluster_model = cluster_model
     
-        self.dim_size = dim_size
-        self.umap = UMAP(n_neighbors=15, n_components=self.dim_size, min_dist=0.0, metric='cosine')
+        self.umap = UMAP(n_neighbors=15, n_components=dim, min_dist=0.0, metric='cosine')
 
-        # cluster
-        self.hdbscan_model = hdbscan.HDBSCAN(min_cluster_size= self.min_topic_size,
+        if self.cluster_model == 0:
+            self.hdbscan_model = hdbscan.HDBSCAN(min_cluster_size= self.min_topic_size,
                                                               metric='euclidean',
                                                               cluster_selection_method='eom',
                                                               prediction_data=True)
-
+        else:
+            self.hdbscan_model = hdbscan.HDBSCAN(min_cluster_size= self.min_topic_size,
+                                                    metric='euclidean',
+                                                    cluster_selection_method='eom',
+                                                    prediction_data=True)
+                                    
+        self.top_n_words = top_n_words
+        self.vectorizer_model = CountVectorizer()
+        self.topics = None
+        self.topic_sizes = None
         
     def fit_transform(self, documents):
         
@@ -62,7 +76,9 @@ class ESG_Topic:
                                   "ESG_label": None,
                                   "Topic": None})
         embeddings = self.embeddings
-        my_df["ESG_label"], embeddings = self._semi_supervised_modeling(embeddings)
+
+        if self.semi_sup:
+            my_df["ESG_label"], embeddings = self._semi_supervised_modeling(embeddings)
 
         embeddings = self._reduce_dimensionality(embeddings)
         documents = self._cluster_embeddings(embeddings, my_df)
@@ -256,4 +272,3 @@ class ESG_Topic:
             scores = np.array([matrix[row, value] if value is not None else 0 for value in values])
             top_values.append(scores)
         return np.array(top_values)
-
