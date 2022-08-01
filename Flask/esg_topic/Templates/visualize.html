@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<center>
+<h1>Topics</h1>
+{% for topic in result %}
+  <button type="button" class="collapsible">
+    Topic {{loop.index}}. Nb Tweets = {{topic[0]}}
+    <br>
+    Keywords: {{topic[2]}}
+    <br>
+     Hashtags:{{topic[3]}}
+    </button>
+  <div class="content">
+    {% for table in topic[1] %}
+            {{ table|safe }}
+    {% endfor %}
+  </div>
+{% endfor%}    
+</center>
+
+    <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    }
+    </script>
+
+
+{% endblock %}
