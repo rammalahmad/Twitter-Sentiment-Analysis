@@ -13,6 +13,7 @@ from constants import en_dic, fr_dic
 from sklearn.cluster import KMeans
 from tfidf_idfi import TFIDF_IDFi
 from _utils import Embedder
+from tomaster import tomato
 from yellowbrick.cluster.elbow import kelbow_visualizer
 
 import sys
@@ -43,7 +44,6 @@ class ESG_Topic:
         self.embeddings = embeddings
         self.min_topic_size = min_topic_size
         self.cluster_model = cluster_model
-        self.nr_topics = nr_topics
         self.do_mmr = do_mmr
     
         self.umap = UMAP(n_neighbors=15, n_components = dim, min_dist=0.0, metric='cosine')
@@ -179,11 +179,18 @@ class ESG_Topic:
             l.append(elbow.elbow_value_)
 
             self.nr_topics = max(l)
+            print("Number of clusters = ", self.nr_topics)
             self.kmeans = KMeans(self.nr_topics, random_state=42)
             self.kmeans.fit(embeddings)
             documents['Topic'] = self.kmeans.labels_
             self._update_topic_size(documents)
             documents['dist_centroid'] = self.kmeans.inertia_
+
+        elif self.cluster_model == 2:
+            print("Clustering with ToMATo")
+            clusters = tomato(points=embeddings, k=15)
+            documents['Topic'] = list(clusters)
+            self._update_topic_size(documents)
 
 
         print("Clustered embeddings successfully")

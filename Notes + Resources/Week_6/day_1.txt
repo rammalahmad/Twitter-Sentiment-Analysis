@@ -80,3 +80,5 @@ Filtrage ESG
 Trouver le meilleur k elbow method / ToMATo
 Note sentiment analysis
 Affichage
+
+Problem with ToMATo: Too many clusters, we would also need to specify the number of neighbors so it's not really a shortcut
