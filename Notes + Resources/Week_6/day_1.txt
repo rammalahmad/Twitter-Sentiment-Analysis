@@ -38,3 +38,45 @@ of the [CLS] token. Hence, for the sentence "You are on Stackoverflow", it gives
 embedding of the [CLS] token (from Sequence output), further processed by a Linear layer and a Tanh activation function. The Linear layer 
 weights are trained from the next sentence prediction (classification) objective during pretraining. For further details, please refer to 
 the BERT original paper.
+
+Create a file for clustering models
+Fais un schéma expliaquant les différentes étapes et difficulté en terme de mémoire pour FLASK
+
+Modify preprocessing (retweets done, urls done)
+
+Scrap the tweets done
+Save the embeddings each time done
+Modify and optimize the models to be seen
+See how you can get closest tweets first done for kmeans, 
+Semi-supervised: check Gram-schimdt-
+mmr  
+hashtags 
+TD-IDF instead of TF-IDF-idi
+https://theblue.ai/services/natural-languageprocessing/topic-modeling-python-gensim/
+
+a document has
+high marginal relevance if it is both relevant to the query
+and contains minimal similarity to previously selected
+documents. We strive to maximize-marginal relevance in
+retrieval and summarization, hence we label our method
+“maximal marginal relevanci” (MMR).
+
+
+Left to do:
+
+hashtags find a way to appear the most relevant
+Proper integration of GramSchmidt
+Find center HdbScan
+
+
+
+The clusters may be non-convex, and if you compute the average of all points 
+(and your data are points - they don't need to be) it may then be outside of the cluster
++ Computational effort ...
+aSK ABOUT HIEREARICHAL DENDROGRAM
+
+
+Filtrage ESG
+Trouver le meilleur k elbow method / ToMATo
+Note sentiment analysis
+Affichage

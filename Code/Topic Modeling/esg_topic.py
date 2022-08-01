@@ -60,7 +60,8 @@ class ESG_Topic:
                                                     metric='euclidean',
                                                     cluster_selection_method='eom',
                                                     prediction_data=True)
-                                    
+        
+        self.df = None                      
         self.top_n_words = top_n_words
         self.vectorizer_model = CountVectorizer()
         self.topics = None
@@ -73,7 +74,6 @@ class ESG_Topic:
             self.embeddings = self._extract_embeddings(documents)
         my_df = pd.DataFrame({"Document": documents,
                                   "ID": range(len(documents)),
-                                  "ESG_label": None,
                                   "Topic": None})
         embeddings = self.embeddings
 
@@ -83,7 +83,7 @@ class ESG_Topic:
         embeddings = self._reduce_dimensionality(embeddings)
         documents = self._cluster_embeddings(embeddings, my_df)
         self._extract_topics(my_df)
-
+        self.df = my_df
         return my_df
 
 
