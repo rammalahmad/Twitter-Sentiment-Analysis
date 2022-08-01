@@ -28,7 +28,7 @@ class ESG_Topic:
                 semi_sup: int = 0,
                 lang: str = "en",  
                 top_n_words: int = 10, 
-                cluster_model: int = 0,
+                cluster_model: int = 1,
                 min_topic_size: int = 20,
                 dim: int = 50,
                 do_mmr: bool = False):
@@ -185,6 +185,7 @@ class ESG_Topic:
             documents['Topic'] = self.kmeans.labels_
             self._update_topic_size(documents)
             documents['dist_centroid'] = self.kmeans.inertia_
+            documents = documents.sort_values('dist_centroid')
 
         elif self.cluster_model == 2:
             print("Clustering with ToMATo")
