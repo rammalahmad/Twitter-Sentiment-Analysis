@@ -13,6 +13,7 @@ from constants import en_dic, fr_dic
 from sklearn.cluster import KMeans
 from tfidf_idfi import TFIDF_IDFi
 from _utils import Embedder
+from yellowbrick.cluster.elbow import kelbow_visualizer
 
 import sys
 
@@ -28,7 +29,6 @@ class ESG_Topic:
                 top_n_words: int = 10, 
                 cluster_model: int = 0,
                 min_topic_size: int = 20,
-                nr_topics: int = 15,
                 dim: int = 50,
                 do_mmr: bool = False):
 
@@ -54,7 +54,7 @@ class ESG_Topic:
                                                               cluster_selection_method='eom',
                                                               prediction_data=True)
         elif self.cluster_model == 1:
-            self.kmeans = KMeans(self.nr_topics, random_state=42)
+            self.kmeans = KMeans(random_state=42)
         
         self.embedder = Embedder(self.model_number)
         self.df = None                      
@@ -85,6 +85,7 @@ class ESG_Topic:
             my_df["ESG_label"], embeddings = self._semi_supervised_modeling(embeddings)
 
         embeddings = self._reduce_dimensionality(embeddings)
+
         documents = self._cluster_embeddings(embeddings, my_df)
         self._extract_topics(my_df)
         self.df = my_df
@@ -159,17 +160,32 @@ class ESG_Topic:
         return np.nan_to_num(reduced_embeddings)
 
     def _cluster_embeddings(self, embeddings, documents):
+
         if self.cluster_model == 0:
             print("Clustering with DBScan")
             self.hdbscan_model.fit(embeddings)
             documents['Topic'] = self.hdbscan_model.labels_
             self._update_topic_size(documents)
+
         elif self.cluster_model == 1:
             print("Clustering with KMeans")
+
+            l = []
+            elbow = kelbow_visualizer(self.kmeans, embeddings, metric='silhouette', k=(2,15))
+            l.append(elbow.elbow_value_)
+            elbow = kelbow_visualizer(self.kmeans, embeddings, metric='calinski_harabasz', k=(2,15))
+            l.append(elbow.elbow_value_)
+            elbow = kelbow_visualizer(self.kmeans, embeddings, metric='distortion', k=(2,15))
+            l.append(elbow.elbow_value_)
+
+            self.nr_topics = max(l)
+            self.kmeans = KMeans(self.nr_topics, random_state=42)
             self.kmeans.fit(embeddings)
             documents['Topic'] = self.kmeans.labels_
             self._update_topic_size(documents)
             documents['dist_centroid'] = self.kmeans.inertia_
+
+
         print("Clustered embeddings successfully")
 
         return documents
