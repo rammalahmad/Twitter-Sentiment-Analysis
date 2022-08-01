@@ -39,12 +39,14 @@
             <br/>
             DBScan<input type= "radio" id = "DBScan" name="cluster_model" style="vertical-align: middle" value="0" checked="true" onclick="myFunction_1()">
             <br/>
+            ToMATo<input type= "radio" id = "DBScan" name="cluster_model" style="vertical-align: middle" value="2" onclick="myFunction_1()">
+            <br/>
 
 
-            <div id="k_value" style="display:none">
+            <!-- <div id="k_value" style="display:none">
                 <h2>Number of Clusters K</h2>
                 <input type="number" name="nb_clusters" value="15">
-            </div>
+            </div> -->
 
 
 
@@ -72,16 +74,16 @@
                 function myFunction_1() {
                 var checkBox = document.getElementById("DBScan");
                 var size = document.getElementById("topic_size");
-                var k = document.getElementById("k_value");
+                // var k = document.getElementById("k_value");
                 if (checkBox.checked == true)
                 {
                     size.style.display = "block";
-                    k.style.display = "none";
+                    // k.style.display = "none";
                 } 
                 else
                 {
                     size.style.display = "none";
-                    k.style.display = "block";
+                    // k.style.display = "block";
                 }
                 }
             </script>

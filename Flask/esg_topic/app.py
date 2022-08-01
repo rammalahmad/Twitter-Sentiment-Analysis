@@ -24,7 +24,7 @@ def parameters():
             lang = request.form.get('lang')
             dim = int(request.form.get('dim'))
             cluster_model = int(request.form.get('cluster_model'))
-            nr_topics = int(request.form.get('nb_clusters'))
+            # nr_topics = int(request.form.get('nb_clusters'))
             min_topic_size = int(request.form.get('min_topic_size'))
             do_mmr = int(request.form.get('do_mmr'))
 
@@ -33,7 +33,6 @@ def parameters():
                               lang=lang,
                               cluster_model=cluster_model,
                               min_topic_size=min_topic_size,
-                              nr_topics=nr_topics,
                               dim=dim,
                               do_mmr=do_mmr)
             session['topicer'] = topicer
@@ -93,7 +92,7 @@ def visualize():
       for topic, cluster in grouped:
             keyword = [e[0] for e in keywords[topic]]
             hashtags = topicer._extract_hashtags(cluster)
-            result += [(len(cluster), [(cluster.sort_values('dist_centroid'))[['Document']].to_html(classes='data', header="true")], keyword, hashtags)]
+            result += [(len(cluster), [cluster[['Document']].to_html(classes='data', header="true")], keyword, hashtags)]
       return render_template('visualize.html', result=result)
 
 
