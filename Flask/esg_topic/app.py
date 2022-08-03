@@ -20,7 +20,6 @@ def parameters():
       session['topicer'] = None
       if request.method == "POST":
             model_number = int(request.form.get('model'))
-            semi_sup = int(request.form.get('sem_sup'))
             lang = request.form.get('lang')
             dim = int(request.form.get('dim'))
             cluster_model = int(request.form.get('cluster_model'))
@@ -29,7 +28,6 @@ def parameters():
             do_mmr = int(request.form.get('do_mmr'))
 
             topicer = ESG_Topic(model_number=model_number,
-                              semi_sup=semi_sup,
                               lang=lang,
                               cluster_model=cluster_model,
                               min_topic_size=min_topic_size,
@@ -92,7 +90,7 @@ def visualize():
       for topic, cluster in grouped:
             keyword = [e[0] for e in keywords[topic]]
             hashtags = topicer._extract_hashtags(cluster)
-            result += [(len(cluster), [cluster[['Document']].to_html(classes='data', header="true")], keyword, hashtags)]
+            result += [(len(cluster), [cluster[['Document', 'ESG_class']].to_html(classes='data', header="true")], keyword, hashtags)]
       return render_template('visualize.html', result=result)
 
 

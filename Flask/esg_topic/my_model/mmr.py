@@ -42,10 +42,13 @@ def mmr(doc_embedding: np.ndarray,
 
         # Calculate MMR
         mmr = (1-diversity) * candidate_similarities - diversity * target_similarities.reshape(-1, 1)
-        mmr_idx = candidates_idx[np.argmax(mmr)]
-
-        # Update keywords & candidates
-        keywords_idx.append(mmr_idx)
-        candidates_idx.remove(mmr_idx)
+        try:
+            mmr_idx = candidates_idx[np.argmax(mmr)]
+            # Update keywords & candidates
+            keywords_idx.append(mmr_idx)
+            candidates_idx.remove(mmr_idx)
+        except:
+            print(doc_embedding, word_embeddings, words)
+   
 
     return [words[idx] for idx in keywords_idx]

@@ -15,7 +15,6 @@ from tfidf_idfi import TFIDF_IDFi
 from _utils import Embedder
 from tomaster import tomato
 from yellowbrick.cluster.elbow import kelbow_visualizer
-
 import sys
 
 path = r'C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Flask\esg_topic\Data'
@@ -25,7 +24,6 @@ class ESG_Topic:
 
     def __init__(self, embeddings: np.ndarray = None,
                 model_number: int = 0,
-                semi_sup: int = 0,
                 lang: str = "en",  
                 top_n_words: int = 10, 
                 cluster_model: int = 1,
@@ -33,13 +31,6 @@ class ESG_Topic:
                 dim: int = 50,
                 do_mmr: bool = False):
 
-        if semi_sup == 1:
-            if lang == "fr":
-                self.dic = fr_dic
-            else:
-                self.dic = en_dic
-
-        self.semi_sup = semi_sup
         self.model_number = model_number
         self.embeddings = embeddings
         self.min_topic_size = min_topic_size
@@ -57,7 +48,7 @@ class ESG_Topic:
             self.kmeans = KMeans(random_state=42)
         
         self.embedder = Embedder(self.model_number)
-        self.df = None                      
+        self.df = None
         self.top_n_words = top_n_words
         self.vectorizer_model = CountVectorizer()
         self.topics = None
@@ -67,7 +58,10 @@ class ESG_Topic:
         
     def fit_transform(self, documents, documents_name:str):
         
+        #Preprocessing:
         documents = self._preprocess_text(documents)
+
+        #Extract Embeddings:
         if self.embeddings is None:
             try:
                 name = str(self.model_number) + documents_name + ".npy"
@@ -76,68 +70,32 @@ class ESG_Topic:
             except Exception:
                 self.embeddings = self._extract_embeddings(documents, documents_name)
 
+        #Initialize return DataFrame
         my_df = pd.DataFrame({"Document": documents,
                                   "ID": range(len(documents)),
                                   "Topic": None})
         embeddings = self.embeddings
 
-        if self.semi_sup == 1:
-            my_df["ESG_label"], embeddings = self._semi_supervised_modeling(embeddings)
+        #Classify the tweets into E, S & G
+        my_df = self._filter_esg(df=my_df)
 
+        #Reduce Dimension
         embeddings = self._reduce_dimensionality(embeddings)
 
+        #Cluster the outcome
         documents = self._cluster_embeddings(embeddings, my_df)
+
+        #Remove the None ESG tweets:x
+        my_df = my_df[~my_df['ESG_class'] == -1]
+        my_df= my_df.reset_index(drop=True)
+
+        #Extract the topics keywords
         self._extract_topics(my_df)
+
         self.df = my_df
         return my_df
 
-
-    def _semi_supervised_modeling(self, embeddings: np.ndarray) -> Tuple[List[int], np.array]:
-        """
-        # Info
-        ---
-        Apply Guided Topic Modeling
-
-        We transform the seeded topics to embeddings using the
-        same embedder as used for generating document embeddings.
-
-        Then, we apply cosine similarity between the embeddings
-        and set labels for documents that are more similar to
-        one of the topics, then the average document.
-
-        If a document is more similar to the average document
-        than any of the topics, it gets the -1 label and is
-        thereby not included in UMAP.
-
-        # Arguments
-        ---
-            embeddings: The document embeddings
-
-        # Returns
-        ---
-            y: The labels for each seeded topic
-            embeddings: Updated embeddings
-        """
-
-        # Create embeddings from the seeded topics
-        seed_labels_list = [self._extract_embeddings(keywords).mean(axis=0) for keywords in self.dic]
-
-        seed_labels_list = np.vstack([seed_labels_list, embeddings.mean(axis=0)])
-
-        # Label documents that are most similar to one of the seeded topics
-        sim_matrix = cosine_similarity(embeddings, seed_labels_list)
-        y = [np.argmax(sim_matrix[index]) for index in range(sim_matrix.shape[0])]
-        y = [val if val != (len(seed_labels_list)-1) else -1 for val in y]
-
-        # Average the document embeddings related to the seeded topics with the
-        # embedding of the seeded topic to force the documents in a cluster
-        for seed_topic in range(len(seed_labels_list)):
-            indices = [index for index, topic in enumerate(y) if topic == seed_topic]
-            embeddings[indices] = np.average([embeddings[indices], seed_labels_list[seed_topic]], weights=[3, 1])
-        print("Modified embeddings with Gram-Schmidt successfully")
-        return y, embeddings    
-
-
+ 
     def _extract_embeddings(self, documents, documents_name="", method="documents"):
         if method == "documents":
             embeddings = self.embedder.embed(documents)
@@ -149,7 +107,22 @@ class ESG_Topic:
             embeddings = self.embedder.embed(documents)
             return embeddings
         
-    
+    def _filter_esg(self, df, filter_model:int = 0) -> pd.DataFrame:
+
+        if filter_model == 0:
+            from  _esg_filter import GS_model
+            filter = GS_model(threshold = 0.5)
+            df['ESG_class'] = filter.fit(self.embeddings)
+            print("ESG_filtered the tweets successfully")
+
+        elif filter_model == 1:
+            from _esg_filter import Mean_model
+            filter = Mean_model(threshold = 0.15)
+            df['ESG_class'] = filter.forward(self.embeddings)
+            print("ESG_filtered the tweets successfully")
+
+        return df
+
 
     def _reduce_dimensionality(self, embeddings):
 
@@ -171,12 +144,12 @@ class ESG_Topic:
             print("Clustering with KMeans")
 
             l = []
-            elbow = kelbow_visualizer(self.kmeans, embeddings, metric='silhouette', k=(2,15))
-            l.append(elbow.elbow_value_)
-            elbow = kelbow_visualizer(self.kmeans, embeddings, metric='calinski_harabasz', k=(2,15))
-            l.append(elbow.elbow_value_)
-            elbow = kelbow_visualizer(self.kmeans, embeddings, metric='distortion', k=(2,15))
-            l.append(elbow.elbow_value_)
+            x1 = kelbow_visualizer(self.kmeans, embeddings, metric='silhouette', k=(2,15)).elbow_value_
+            l.append(x1)
+            x2 = kelbow_visualizer(self.kmeans, embeddings, metric='calinski_harabasz', k=(2,15)).elbow_value_
+            l.append(x2)
+            x3 = kelbow_visualizer(self.kmeans, embeddings, metric='distortion', k=(2,15)).elbow_value_
+            l.append(x3)
 
             self.nr_topics = max(l)
             print("Number of clusters = ", self.nr_topics)
@@ -247,14 +220,15 @@ class ESG_Topic:
             from mmr import mmr
             print("Running MMR")
             for topic, topic_words in topics.items():
-                words = [word[0] for word in topic_words]
-                word_embeddings = self._extract_embeddings(words,
-                                                            method="MMR")
-                topic_embedding = self._extract_embeddings(" ".join(words),
-                                                            method="MMR").reshape(1, -1)
-                topic_words = mmr(topic_embedding, word_embeddings, words,
-                                    top_n=self.top_n_words, diversity=0.2)
-                topics[topic] = [(word, value) for word, value in topics[topic] if word in topic_words]
+                if len(topic_words) != 0: # avoiding error
+                    words = [word[0] for word in topic_words]
+                    word_embeddings = self._extract_embeddings(words,
+                                                                method="MMR")
+                    topic_embedding = self._extract_embeddings(" ".join(words),
+                                                                method="MMR").reshape(1, -1)
+                    topic_words = mmr(topic_embedding, word_embeddings, words,
+                                        top_n=self.top_n_words, diversity=0.2)
+                    topics[topic] = [(word, value) for word, value in topics[topic] if word in topic_words]
 
         topics = {label: values[:self.top_n_words] for label, values in topics.items()}
 
