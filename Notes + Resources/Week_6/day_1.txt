@@ -82,3 +82,8 @@ Note sentiment analysis
 Affichage
 
 Problem with ToMATo: Too many clusters, we would also need to specify the number of neighbors so it's not really a shortcut
+Probelm wiith KMeans: the printed images
+
+Eliminate topic if all keywords are not ESG
+https://www.kaggle.com/code/rowhitswami/keywords-extraction-using-tf-idf-method/notebook
+TFIDF alternative
