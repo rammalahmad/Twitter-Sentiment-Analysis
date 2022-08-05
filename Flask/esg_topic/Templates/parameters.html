@@ -8,11 +8,11 @@
         <form action="/" method="post">
 
             <h2>Model</h2>
-            ESG-BERT (English)<input type="radio" style="vertical-align: middle" name="model" value="0" checked="true">
+            ESG-BERT (English)<input type="radio" style="vertical-align: middle" name="embed_model" value="0" checked="true">
             <br/>
-            SBERT (MultiLing)<input type="radio" style="vertical-align: middle" name="model" value="1">
+            SBERT (MultiLing)<input type="radio" style="vertical-align: middle" name="embed_model" value="1">
             <br/>
-            XLM-RoBERTa Base (MultiLing)<input type="radio" style="vertical-align: middle" name="model" value="2">
+            XLM-RoBERTa Base (MultiLing)<input type="radio" style="vertical-align: middle" name="embed_model" value="2">
             <br/>
 
             <div id="language" style="display:none">
@@ -80,15 +80,31 @@
                 }
                 }
             </script>
+
+
+            <h2>ESG Filter Model</h2>
+            GS Model<input type="radio" id= "GS" name="esg_model" style="vertical-align: middle" value="0" >
             <br/>
-            <div id="mmr" style="display:block">
-                <h2>Maximize Marginal Relevance</h2>
-                Yes<input type="radio" name="do_mmr" style="vertical-align: middle" value="1">
-                <br/>
-                No<input type="radio" name="do_mmr" style="vertical-align: middle" value="0" checked="true">
-                <br/>
-            </div>
-            
+            Mean Model<input type= "radio" id = "Mean" name="esg_model" style="vertical-align: middle" value="1" checked="true" >
+            <br/>
+            FinBERT<input type= "radio" id = "FinBert" name="esg_model" style="vertical-align: middle" value="2">
+            <br/>
+
+            <h2>Keywords Model</h2>
+            TFIDF Classic<input type="radio" id= "tfidf1" name="keywords_model" style="vertical-align: middle" value="0">
+            <br/>
+            TFIDF scikit<input type= "radio" id = "tfidf2" name="keywords_model" style="vertical-align: middle" value="1" checked="true">
+            <br/>
+            KeyBERT<input type= "radio" id = "keybert" name="keywords_model" style="vertical-align: middle" value="2">
+            <br/>
+
+            <h2>Sentiment Analysis Model</h2>
+            RoBERTa<input type="radio" id= "Roberta" name="sent_model" style="vertical-align: middle" value="0" checked="true">
+            <br/>
+            BERT uncased<input type= "radio" id = "Bert" name="sent_model" style="vertical-align: middle" value="1">
+            <br/>
+
+            <br/>            
             <br/>
             <br/>
             <input type="submit" name="btn" value="Generate Model">
