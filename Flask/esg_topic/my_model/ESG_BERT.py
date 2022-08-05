@@ -15,8 +15,3 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 model.classifier = torch.nn.Identity()
-
-# def esg_bert_embed(text):
-#   tokens = tokenizer(text, return_tensors='pt')
-#   output = model(**tokens)
-#   return output.logits.detach().numpy()

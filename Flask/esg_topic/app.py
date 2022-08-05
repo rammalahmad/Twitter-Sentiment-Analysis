@@ -19,20 +19,21 @@ Session(app)
 def parameters():
       session['topicer'] = None
       if request.method == "POST":
-            model_number = int(request.form.get('model'))
-            lang = request.form.get('lang')
+            embed_model = int(request.form.get('embed_model'))
             dim = int(request.form.get('dim'))
             cluster_model = int(request.form.get('cluster_model'))
-            # nr_topics = int(request.form.get('nb_clusters'))
+            esg_model = int(request.form.get('esg_model'))
+            keywords_model = int(request.form.get('keywords_model'))
+            sent_model = int(request.form.get('sent_model'))
             min_topic_size = int(request.form.get('min_topic_size'))
-            do_mmr = int(request.form.get('do_mmr'))
 
-            topicer = ESG_Topic(model_number=model_number,
-                              lang=lang,
-                              cluster_model=cluster_model,
-                              min_topic_size=min_topic_size,
-                              dim=dim,
-                              do_mmr=do_mmr)
+            topicer = ESG_Topic(embed_model = embed_model,
+                              esg_model = esg_model,
+                              cluster_model = cluster_model, 
+                              keywords_model = keywords_model,
+                              sent_model = sent_model,
+                              dim = dim, 
+                              min_topic_size = min_topic_size)
             session['topicer'] = topicer
             return redirect(url_for('dataframe'))
       else:
@@ -67,6 +68,7 @@ def dataframe():
             elif df_name == "amafr":
                   df = pd.read_csv(path+"/Data/"+"amazon_fr.csv")
                   topicer.fit_transform(df.tweet, df_name)
+            topicer.df.to_csv("testing.csv")
             session['topicer'] = topicer
             return redirect('visualize')
       else:
@@ -79,9 +81,7 @@ def visualize():
             topicer = session['topicer']
       except Exception:
             return render_template('parameters.html', step = "Generate")
-      # global keywords
-      # df = pd.read_csv('tesla_topics.csv')
-      #keywords = keywords
+
 
       df = topicer.df
       keywords = topicer.get_topics()
@@ -89,7 +89,7 @@ def visualize():
       result=[]
       for topic, cluster in grouped:
             keyword = [e[0] for e in keywords[topic]]
-            hashtags = topicer._extract_hashtags(cluster)
+            hashtags = topicer.topics_hashtags[topic]
             result += [(len(cluster), [cluster[['Document', 'ESG_class']].to_html(classes='data', header="true")], keyword, hashtags)]
       return render_template('visualize.html', result=result)
 

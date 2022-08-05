@@ -86,4 +86,15 @@ Probelm wiith KMeans: the printed images
 
 Eliminate topic if all keywords are not ESG
 https://www.kaggle.com/code/rowhitswami/keywords-extraction-using-tf-idf-method/notebook
-TFIDF alternative
+TFIDF alternative KeyBERT, try them both
+https://github.com/flairNLP/flair a nice library allowing to extract embeddings using any hugging face model
+
+Take the most recursive hashtags and
+
+Implement unit testing ensa
+UMAP doable
+Translate read article
+Filter ESG before clustering
+Add scraping twitter
+Research how can we extrc=act tweets from twitter...
+Doucmentation 
