@@ -80,3 +80,55 @@ class GS_model:
         for e in base:
             a_F = np.add(a_F, np.multiply((e@a),e))
         return a_F
+
+
+class Finbert_model:
+
+    def __init__(self, lang:str = "en"):
+
+        from deep_translator import GoogleTranslator
+        from transformers import pipeline, BertTokenizer, BertForSequenceClassification
+
+        finbert = BertForSequenceClassification.from_pretrained('yiyanghkust/finbert-esg',num_labels=4)
+        tokenizer = BertTokenizer.from_pretrained('yiyanghkust/finbert-esg')
+
+        self.filter = pipeline("text-classification", model=finbert, tokenizer=tokenizer)
+        self.lang = lang
+    
+
+    def fit(self, documents):
+        l = self.filter(documents)
+        result = []
+        for t in l:
+            if t['label']=="Environmental":
+                result += [0]
+            elif t['label']=="Social":
+                result += [1]
+            elif t['label']=="Governance":
+                result += [2]
+            else:
+                result += [-1]
+        print(result)
+        return result
+
+    # def fit_1(self, documents):
+    #     l = []
+    #     for text in documents:
+    #         l += [self.finbert_esg(text)]
+    #     return l
+
+    # def finbert_esg(self, text:str) -> str:
+    #         if self.lang=="en":
+    #             return self.finbert_english(text)
+    #         else:
+    #             text_en = GoogleTranslator(source=self.lang, target="en").translate(text)
+    #             return self.finbert_english(text_en)
+
+    # def finbert_english(self, text:str) -> str:
+    #     if self.filter(text)[0]['label']=="Environmental":
+    #         return 0
+    #     if self.filter(text)[0]['label']=="Social":
+    #         return 1
+    #     if self.filter(text)[0]['label']=="Governance":
+    #         return 2
+    #     return -1

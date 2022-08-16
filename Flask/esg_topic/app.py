@@ -26,12 +26,14 @@ def parameters():
             keywords_model = int(request.form.get('keywords_model'))
             sent_model = int(request.form.get('sent_model'))
             min_topic_size = int(request.form.get('min_topic_size'))
-
+            use_umap = int(request.form.get('use_umap'))
+      
             topicer = ESG_Topic(embed_model = embed_model,
                               esg_model = esg_model,
                               cluster_model = cluster_model, 
                               keywords_model = keywords_model,
                               sent_model = sent_model,
+                              use_umap = use_umap,
                               dim = dim, 
                               min_topic_size = min_topic_size)
             session['topicer'] = topicer
@@ -90,7 +92,8 @@ def visualize():
       for topic, cluster in grouped:
             keyword = [e[0] for e in keywords[topic]]
             hashtags = topicer.topics_hashtags[topic]
-            result += [(len(cluster), [cluster[['Document', 'ESG_class']].to_html(classes='data', header="true")], keyword, hashtags)]
+            sentiment = topicer.topics_sentiment[topic]
+            result += [(len(cluster), [cluster[['Document', 'ESG_class']].to_html(classes='data', header="true")], keyword, hashtags, sentiment)]
       return render_template('visualize.html', result=result)
 
 

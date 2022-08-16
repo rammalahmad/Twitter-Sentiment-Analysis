@@ -9,13 +9,14 @@ import hdbscan
 from umap import UMAP
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from yellowbrick.cluster import KElbowVisualizer
 from sklearn.metrics.pairwise import cosine_similarity
 from constants import en_dic, fr_dic
 from sklearn.cluster import KMeans
 from tfidf_idfi import TFIDF_IDFi
 from _utils import Embedder
 from tomaster import tomato
-from yellowbrick.cluster.elbow import kelbow_visualizer
+from yellowbrick.cluster.elbow import KElbowVisualizer
 from sentiment_analysis import Sent_model
 import sys
 
@@ -30,9 +31,10 @@ class ESG_Topic:
                 cluster_model: int = 1, 
                 keywords_model: int = 1,
                 sent_model: int = 0,
+                use_umap: int = 1, 
                 dim: int = 50, 
                 min_topic_size: int = 20,
-                top_n_words: int = 10, 
+                top_n_words: int = 10,
                 embeddings: np.ndarray = None):
 
         self.embed_model = embed_model
@@ -40,6 +42,7 @@ class ESG_Topic:
         self.cluster_model = cluster_model
         self.keywords_model = keywords_model
         self.sent_model = sent_model
+        self.use_umap = use_umap
         self.dim = dim
         self.min_topic_size = min_topic_size
         self.top_n_words = top_n_words
@@ -69,15 +72,22 @@ class ESG_Topic:
                                   "ID": range(len(documents)),
                                   "Topic": None})
         embeddings = self.embeddings
+        embeddings = embeddings.tolist()
 
         #Classify the tweets into E, S & G & Remove the None ESG tweets
         my_df = self._filter_esg(df=my_df)
         my_df = my_df[~my_df['ESG_class'] == -1]
+        embeddings = [embeddings[i] for i in my_df["ID"]]
         my_df= my_df.reset_index(drop=True)
 
         #Reduce Dimension
-        embeddings = self._reduce_dimensionality(embeddings)
-
+        if self.use_umap == 1:
+            embeddings = self._reduce_dimensionality(embeddings)
+        else:
+            print(len(embeddings))
+            embeddings = np.array(embeddings)
+            print(embeddings)
+            
         #Cluster the outcome
         documents = self._cluster_embeddings(embeddings, my_df)
 
@@ -97,7 +107,7 @@ class ESG_Topic:
     def _extract_embeddings(self, documents, documents_name="", method="documents"):
         self.embedder = Embedder(self.embed_model)
         if method == "documents":
-            embeddings = self.embedder.embed(documents)
+            embeddings = self.embedder.embed(documents=documents, b_size=32)
             name = str(self.embed_model) + documents_name
             np.save(path+"/"+name, embeddings)
             print("Extracted the embeddings successfully")
@@ -111,12 +121,18 @@ class ESG_Topic:
         if self.esg_model == 0:
             from  _esg_filter import GS_model
             filter = GS_model(threshold = 0.5)
+            df['ESG_class'] = filter.fit(self.embeddings)
 
         elif self.esg_model == 1:
             from _esg_filter import Mean_model
             filter = Mean_model(threshold = 0.15)
-
-        df['ESG_class'] = filter.fit(self.embeddings)
+            df['ESG_class'] = filter.fit(self.embeddings)
+        
+        elif self.esg_model == 2:
+            from _esg_filter import Finbert_model
+            filter = Finbert_model()
+            df['ESG_class'] = filter.fit(df.Document.to_list())
+        
         print("ESG_filtered the tweets successfully")
 
         return df
@@ -145,15 +161,9 @@ class ESG_Topic:
         elif self.cluster_model == 1:
             print("Clustering with KMeans")
             kmeans = KMeans(random_state=42)
-            l = []
-            x1 = kelbow_visualizer(kmeans, embeddings, metric='silhouette', k=(2,15)).elbow_value_
-            l.append(x1)
-            x2 = kelbow_visualizer(kmeans, embeddings, metric='calinski_harabasz', k=(2,15)).elbow_value_
-            l.append(x2)
-            x3 = kelbow_visualizer(kmeans, embeddings, metric='distortion', k=(2,15)).elbow_value_
-            l.append(x3)
-
-            self.nr_topics = max(l)
+            model = KElbowVisualizer(kmeans, metric='distortion', k=(1,15))
+            model.fit(embeddings)
+            self.nr_topics = model.elbow_value_
             print("Number of clusters = ", self.nr_topics)
             kmeans = KMeans(self.nr_topics, random_state=42)
             kmeans.fit(embeddings)
@@ -256,6 +266,8 @@ class ESG_Topic:
         return topics
 
     def _apply_mmr(self, words, diversity:float = 0.5):
+        if len(words) == 0:
+            return []
         from mmr import mmr
         word_embeddings = self._extract_embeddings(words,
                                                     method="MMR")
@@ -266,6 +278,7 @@ class ESG_Topic:
         return topic_words
 
     def _extract_hashtags(self, df):
+        print("Starting Hashtags extraction")
         grouped = df.groupby('Topic')
         self.topics_hashtags = {}
         for topic, cluster in grouped:
@@ -275,11 +288,13 @@ class ESG_Topic:
         print("Extracted hashtags successfully")
 
     def _extract_sentiment(self, df):
+        print("Starting sentiment analysis")
         sent_analyst = Sent_model(self.sent_model)
         grouped = df.groupby('Topic')
         self.topics_sentiment = {}
         for topic, cluster in grouped:
             self.topics_sentiment[topic] = sent_analyst.fit(cluster.Document.to_list())
+            print("Topic ", topic, " has a sentiment score of ", self.topics_sentiment[topic])
         print("Analysed Sentiment successfully")
 
     def _preprocess_text(self,documents):

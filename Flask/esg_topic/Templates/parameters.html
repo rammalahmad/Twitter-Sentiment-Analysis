@@ -23,16 +23,24 @@
                 <br/>
             </div>
 
+            
+            <h2>Use UMAP</h2>
+                No<input type="radio" id="no_umap" name="use_umap" style="vertical-align: middle" value="0" onclick="myFunction_2()">
+                <br/>
+                Yes<input type="radio" id="yes_umap" name="use_umap" style="vertical-align: middle" value="1" checked="true" onclick="myFunction_2()">
+                <br/>
 
-            <h2>Dimension UMAP</h2>
-            <input type="number" placeholder="Dimension" name="dim" value="50">
+            <div id="dim_umap" style="display:block">
+                <h2>Dimension UMAP</h2>
+                <input type="number" placeholder="Dimension" name="dim" value="50">
+            </div>
 
             <h2>Clustering Model</h2>
             KMeans<input type="radio" id= "KMeans" name="cluster_model" style="vertical-align: middle" value="1" onclick="myFunction_1()">
             <br/>
             DBScan<input type= "radio" id = "DBScan" name="cluster_model" style="vertical-align: middle" value="0" checked="true" onclick="myFunction_1()">
             <br/>
-            ToMATo<input type= "radio" id = "DBScan" name="cluster_model" style="vertical-align: middle" value="2" onclick="myFunction_1()">
+            ToMATo<input type= "radio" id = "ToMATO" name="cluster_model" style="vertical-align: middle" value="2" onclick="myFunction_1()">
             <br/>
 
 
@@ -77,6 +85,19 @@
                 {
                     size.style.display = "none";
                     // k.style.display = "block";
+                }
+                }
+
+                function myFunction_2() {
+                var checkBox = document.getElementById("yes_umap");
+                var size = document.getElementById("dim_umap");
+                if (checkBox.checked == true)
+                {
+                    size.style.display = "block";
+                } 
+                else
+                {
+                    size.style.display = "none";
                 }
                 }
             </script>
