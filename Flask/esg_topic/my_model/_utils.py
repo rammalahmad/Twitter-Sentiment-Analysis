@@ -39,7 +39,7 @@ class Embedder:
             self.tokenizer = tokenizer
         
 
-    def embed(self, documents: List[str]) -> np.ndarray:
+    def embed(self, documents: List[str], b_size = 1) -> np.ndarray:
         if self.index == 0:
             l = []
             for document in tqdm(documents, "Progress"):
@@ -49,7 +49,7 @@ class Embedder:
             return np.vstack(l)
             
         elif self.index == 1:
-            return np.array(self.model.encode(documents, batch_size=32, show_progress_bar=True))
+            return np.array(self.model.encode(documents, batch_size=b_size, show_progress_bar=True))
 
         elif self.index == 2:
             l = []

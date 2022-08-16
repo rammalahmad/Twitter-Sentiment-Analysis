@@ -8,12 +8,12 @@ nlp = pipeline("text-classification", model=finbert, tokenizer=tokenizer)
 
 def finbert_english(text:str) -> str:
     if nlp(text)[0]['label']=="Environmental":
-        return 'E'
+        return 0
     if nlp(text)[0]['label']=="Social":
-        return 'S'
+        return 1
     if nlp(text)[0]['label']=="Governance":
-        return 'G'
-    return 'N'
+        return 2
+    return -1
 
 
 

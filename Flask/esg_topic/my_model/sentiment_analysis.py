@@ -16,34 +16,40 @@ class Sent_model:
 
     def fit(self, documents):
         l = self.sentiment(documents)
-        esg_score=0
+        doc_score=0
 
         if self.model == 0:
-            for e in l:
-                if e['label'] == 'Neutral':
-                    esg_score+= 0
-                if e['label'] == 'Positive':
-                    esg_score+= e['score']
-                if e['label'] == 'Negative':
-                    esg_score+= -e['score']
+            for t in l:
+                txt_score = 0
+                for e in t:
+                  if e['label'] == 'Neutral':
+                      txt_score += 0
+                  if e['label'] == 'Positive':
+                      txt_score += e['score']
+                  if e['label'] == 'Negative':
+                      txt_score += -e['score']
+                doc_score += txt_score
 
         elif self.model == 1:
-            for e in l:
-                nb_stars = int(e['label'][0])
-                esg_score += ((nb_stars - 3)/2)*(e['score'])
+            for t in l:
+                txt_score = 0
+                for e in t:
+                    nb_stars = int(e['label'][0])
+                    txt_score += ((nb_stars - 3)/2)*(e['score'])
+                doc_score += txt_score
 
-        return esg_score
+        return doc_score / (len(documents))
 
-    def score(self, text):
+    # def score(self, text):
 
-        e = self.sentiment(text)
+    #     e = self.sentiment(text)
 
-        if self.model == 0:
-            if e['label'] == 'Neutral':
-                return 0
+    #     if self.model == 0:
+    #         if e['label'] == 'Neutral':
+    #             return 0
 
-            elif e['label'] == 'Positive':
-                return e['score']
+    #         elif e['label'] == 'Positive':
+    #             return e['score']
 
-            elif e['label'] == 'Negative':
-                return -e['score'] 
+    #         elif e['label'] == 'Negative':
+    #             return -e['score']
