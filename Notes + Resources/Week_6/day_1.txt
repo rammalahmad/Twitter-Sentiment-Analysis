@@ -89,12 +89,38 @@ https://www.kaggle.com/code/rowhitswami/keywords-extraction-using-tf-idf-method/
 TFIDF alternative KeyBERT, try them both
 https://github.com/flairNLP/flair a nice library allowing to extract embeddings using any hugging face model
 
-Take the most recursive hashtags and
+Take the most recursive hashtags 
 
-Implement unit testing ensa
-UMAP doable
-Translate read article
-Filter ESG before clustering
-Add scraping twitter
-Research how can we extrc=act tweets from twitter...
-Doucmentation 
+
+Finalize the Algorithm:
+Fix sentiment analysis done
+Set a button to remove UMAP done
+Fix KMeans elbow done
+Add the third esg filter done
+See what's the issue with the first embedder
+
+Add scraping:
+idea specify the date of scraping, then if you launch the scraper again it will add the new database to the newly made
+
+Optimize results:
+Add hashtags weights
+Preprocessing extraction of hashtags add removal of enterprise name 
+Optimize Gram-Schmidt
+Translation in FinBERT
+
+Passation:
+Documentation
+Implement some unit testing
+
+BackEnd to Front:
+Comment stockage des données
+How to demonstrate to client
+Go online?
+
+Writing:
+Write article on medium
+Rapport de stage 
+
+Further optimizations:
+Find an optimal way to scrap tweets
+Read articles about translation
