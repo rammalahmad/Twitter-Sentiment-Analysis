@@ -14,7 +14,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from constants import en_dic, fr_dic
 from sklearn.cluster import KMeans
 from tfidf_idfi import TFIDF_IDFi
-from _utils import Embedder
+from _embedder import Embedder
 from tomaster import tomato
 from yellowbrick.cluster.elbow import KElbowVisualizer
 from sentiment_analysis import Sent_model

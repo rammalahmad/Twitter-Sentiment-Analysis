@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<form action="/scraping" method="post">
+    Query: <input type="text" name="query">
+    Size: <input type="number" name="size">
+    Language: <input type="text" name="lang">
+    Starting Date: <input type="date" name="sdate">
+    Ending Date: <input type="date" name="edate">
+    <input type="submit" value="Scrap">
+</form>
+
+<!-- {% if l %}
+    <a href="{{url_for('filter')}}" >Preprocess</a>
+{% endif %}
+<a href="{{url_for('visualize')}}" >Data</a> -->
+
+{% endblock %}

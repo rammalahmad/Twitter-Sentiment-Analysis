@@ -97,7 +97,7 @@ Fix sentiment analysis done
 Set a button to remove UMAP done
 Fix KMeans elbow done
 Add the third esg filter done
-See what's the issue with the first embedder
+See what's the issue with the first embedder (leave to after scraping)
 
 Add scraping:
 idea specify the date of scraping, then if you launch the scraper again it will add the new database to the newly made
@@ -107,6 +107,7 @@ Add hashtags weights
 Preprocessing extraction of hashtags add removal of enterprise name 
 Optimize Gram-Schmidt
 Translation in FinBERT
+Reduce the number of files (3 models for embedder put them in one file maybe?)
 
 Passation:
 Documentation
