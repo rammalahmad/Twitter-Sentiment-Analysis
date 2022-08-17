@@ -8,11 +8,33 @@ path = r'C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Flask\esg_topic'
 sys.path.append(path+'/my_model')
 
 from esg_topic import ESG_Topic
+from _scraper import Scraper
 
 app=Flask(__name__,template_folder='templates') 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+
+@app.route("/scraping", methods=['GET','POST'])
+def scraper():
+    if request.method == 'POST':
+      query = request.form.get('query')
+      size = int(request.form.get('size'))
+      lang = request.form.get('lang')
+      sdate = request.form.get('sdate').replace("-", "") + "0000"
+      edate = request.form.get('edate').replace("-", "") + "0000"
+
+      scraper = Scraper(query=query,
+                        size=size,
+                        lang=lang,
+                        sdate=sdate,
+                        edate=edate)
+
+      df = scraper.df
+      return redirect(url_for('parameters'))
+    else:
+        return render_template('scraping.html')
 
 
 @app.route('/', methods=['GET','POST'])
