@@ -49,6 +49,9 @@ class Scraper_df:
 
     def _check_existing_db(self):
         files_list = self._find_files_names(self)
+        if len(files_list) == 0:
+
+        scrap_intervals = []
         for file in files_list:
             file_sdate =  file[len(file) - 25: len(file) - 13]
             file_edate =  file[len(file) - 12:]
@@ -78,14 +81,17 @@ class Scraper_df:
                 self.scrap_sdate = self.sdate
                 self.scrap_edate = self.edate
                     
+    def rec(files_list, sdate, edate, l):
 
-    def _find_files_names(self):
+    def _find_ordered_files_names(self):
         starting_name = self.query + "_" + self.lang
         files_list = []
         for file in os.listdir(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Flask\esg_topic\Data"):
             if file.startswith(starting_name):
                 files_list += [file]
-        return files_list
+        files_sdate = [int(file[len(file) - 25: len(file) - 13]) for file in files_list]
+        return sorted(files_list, key=lambda k: files_sdate[k])
+
 
     def _save_file(self):
         name = self.query + "_" + self.lang + "_" + self.sdate + "_" + self.edate
@@ -110,10 +116,12 @@ class Scraper_df:
         tweets = tw.Cursor(self.api.search ,q= text, lang=lang , tweet_mode="extended").items(size)
         tweet =[]
         user = []
+        date = []
         for i in tweets :
+            date.append(i.created_at)
             tweet.append(i.full_text)
             user.append(i.user.screen_name)
-        return pd.DataFrame({'tweet': tweet})
+        return pd.DataFrame({'Tweet': tweet, 'Date': date})
 
     def full_as(self, query:str, maxResults: int = 100, fromDate:str = "200701010000", toDate:str = "202206260000") ->pd.DataFrame:
         '''
@@ -171,11 +179,11 @@ class Scraper_df:
     @staticmethod
     def date_order(date_1:str, date_2:str):
         year_1 = date_1[0:4]
-        month_1 = date_1[5:7]
-        day_1 = date_1[8:10]
+        month_1 = date_1[4:6]
+        day_1 = date_1[6:8]
         year_2 = date_2[0:4]
-        month_2 = date_2[5:7]
-        day_2 = date_2[8:10]
+        month_2 = date_2[4:6]
+        day_2 = date_2[6:8]
         if year_1!=year_2:
             if year_1 < year_2:
                 return True
@@ -194,5 +202,6 @@ class Scraper_df:
         return True
 
     @staticmethod
-    def df_interval(df, sdate, edate):
+    def df_interval(df, sdate, edate):'
+        for e in df'
 
