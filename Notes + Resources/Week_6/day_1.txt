@@ -100,7 +100,9 @@ Add the third esg filter done
 See what's the issue with the first embedder (leave to after scraping)
 
 Add scraping:
+Comment stockage des données
 idea specify the date of scraping, then if you launch the scraper again it will add the new database to the newly made
+What you could do: arrange the date of you database by 
 
 Optimize results:
 Add hashtags weights
@@ -109,19 +111,24 @@ Optimize Gram-Schmidt
 Translation in FinBERT
 Reduce the number of files (3 models for embedder put them in one file maybe?)
 
+Further optimizations:
+Find an optimal way to scrap tweets
+Read articles about translation
+
 Passation:
 Documentation
 Implement some unit testing
 
 BackEnd to Front:
-Comment stockage des données
 How to demonstrate to client
 Go online?
 
 Writing:
-Write article on medium
+Write article on medium: Use tweets from guardian environment
 Rapport de stage 
+Aperçu twitter how much to pay ...
 
-Further optimizations:
-Find an optimal way to scrap tweets
-Read articles about translation
+
+Benchmark:
+https://developer.twitter.com/en/docs/twitter-api/tweets/search/introduction
+https://developer.twitter.com/en/pricing/search-fullarchive
