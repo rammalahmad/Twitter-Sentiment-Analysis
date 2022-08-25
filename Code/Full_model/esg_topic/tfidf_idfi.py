@@ -1,3 +1,11 @@
+'''
+# Info
+---
+In this script we just implement the TFIDF method manually, it will only be used
+if you decide to insert the parameter keywords_model = 0 in the esg_topic class.
+As for the code it applies the TFIDF calculation formula provided in the resources
+'''
+
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.preprocessing import normalize
 import numpy as np
@@ -15,8 +23,20 @@ class TFIDF_IDFi(TfidfTransformer):
         self.all_documents = all_documents
         
     
-    def socre(self):
-        
+    def socre(self)->sp.csr_matrix:
+        '''
+        # Info
+        ---
+        The main funciton of the class
+        It calculates the score of the words in each class
+        # Params
+        ---
+        self
+
+        # Returns
+        ---
+        a 2d matrix of the word score per topic
+        '''
         self._global_tfidf = self.fit_transform(self.X_origin)
         
         global_df = pd.DataFrame(self._global_tfidf.toarray())

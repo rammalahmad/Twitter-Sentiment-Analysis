@@ -1,3 +1,15 @@
+'''
+# Info
+---
+In this script we modified the esg_bert model by replacing the classificaiton layer 
+in the model by a an identity thus extracting the embeddings produced by the model.
+The main motivation to consider such a model in the first place was that the model had a 
+good classification performance on esg topics, thus it was interesting to test the
+embeddings it produced.
+One main problem with this model is that it's not multiling making it unpractical unless 
+we use a powerful translation tool...
+'''
+
 from transformers import BertForSequenceClassification, BertTokenizer
 import torch
 
