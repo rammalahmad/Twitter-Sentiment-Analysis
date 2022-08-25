@@ -8,13 +8,18 @@ def mmr(doc_embedding: np.ndarray,
         words: List[str],
         top_n: int = 5,
         diversity: float = 0.8) -> List[str]:
-    """ Calculate Maximal Marginal Relevance (MMR)
+    """ 
+    # Info
+    ---
+    Calculate Maximal Marginal Relevance (MMR)
     between candidate keywords and the document.
     MMR considers the similarity of keywords/keyphrases with the
     document, along with the similarity of already selected
     keywords and keyphrases. This results in a selection of keywords
     that maximize their within diversity with respect to the document.
-    Arguments:
+
+    # Arguments
+    ---
         doc_embedding: The document embeddings
         word_embeddings: The embeddings of the selected candidate keywords/phrases
         words: The selected candidate keywords/keyphrases
@@ -22,7 +27,8 @@ def mmr(doc_embedding: np.ndarray,
         diversity: How diverse the select keywords/keyphrases are.
                    Values between 0 and 1 with 0 being not diverse at all
                    and 1 being most diverse.
-    Returns:
+    # Returns
+    ---
          List[str]: The selected keywords/keyphrases
     """
 

@@ -1,3 +1,14 @@
+'''
+# Info
+---
+In this script we define the Embedder script whose primary role is to extract the embeddings from
+the texts.
+The embedder has three possible models.
+0: ESG_BERT
+1: SBERT
+2: xlm-roBERTa-base
+'''
+
 import sys
 sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\esg_topic")
 
@@ -9,6 +20,18 @@ from tqdm import tqdm
 class Embedder:
 
     def __init__(self, index:int = 0):
+        '''
+        # Info
+        ---
+        Calculates the embeddings array for documents
+
+        # Params
+        ---
+        index:int represents the model
+        0: ESG_Bert
+        1: SBERT
+        2: xlm-roBERTa-base
+        '''
         self.index=index
         if index == 0:
             from ESG_BERT import model, tokenizer
@@ -23,7 +46,21 @@ class Embedder:
             self.tokenizer = tokenizer
         
 
-    def embed(self, documents: List[str], b_size = 1) -> np.ndarray:
+    def embed(self, documents:List[str], b_size:int = 1) -> np.ndarray:
+        '''
+        # Info
+        ---
+        Calculates the embeddings array for documents
+
+        # Params
+        ---
+        documents: List[str], the list of text
+        b_size: int, the batch size
+
+        # Result
+        ---
+        np.ndarray the embeddings array
+        '''
         if self.index == 0:
             l = []
             for document in tqdm(documents, "Progress"):
@@ -38,7 +75,7 @@ class Embedder:
         elif self.index == 2:
             l = []
             for document in tqdm(documents, "Progress"):
-                tokens = self.tokenizer(document, return_tensors='pt')
+                tokens = self.tokenizer(document, return_tensors='pt', padding=True)
                 output = self.model(**tokens)
                 l += [output["pooler_output"].detach().numpy()]
             return np.vstack(l)

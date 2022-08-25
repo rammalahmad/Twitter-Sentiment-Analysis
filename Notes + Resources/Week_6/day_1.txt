@@ -139,3 +139,19 @@ How to show the client the interface (To discuss with Elodie)
 Documentation
 Unit testing
 Article + Rapport de stage
+
+
+Plan:
+
+Algorithm:
+Modify based on backend
+Add embeddings to the dataframe 
+Finalize the full_archive and FinBERT
+modify xlm-roberta
+
+
+Write description for functions
+Unit testing
+Start the documentation
+Article
+Rapport
