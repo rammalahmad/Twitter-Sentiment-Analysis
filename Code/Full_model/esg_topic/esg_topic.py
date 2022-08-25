@@ -1,3 +1,7 @@
+import sys
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model")
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\esg_topic")
+
 import re
 import numpy as np
 import pandas as pd
@@ -10,24 +14,19 @@ from umap import UMAP
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from yellowbrick.cluster import KElbowVisualizer
-from sklearn.metrics.pairwise import cosine_similarity
-from constants import en_dic, fr_dic
 from sklearn.cluster import KMeans
 from tfidf_idfi import TFIDF_IDFi
 from _embedder import Embedder
 from tomaster import tomato
 from yellowbrick.cluster.elbow import KElbowVisualizer
-from sentiment_analysis import Sent_model
-import sys
 
-path = r'C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Flask\esg_topic\Data'
 
 
 class ESG_Topic:
 
     def __init__(self, 
                 cluster_model: int = 1, 
-                keywords_model: int = 1,
+                keywords_model: int = 0,
                 use_umap: int = 1, 
                 dim: int = 50, 
                 min_topic_size: int = 20,
@@ -45,52 +44,36 @@ class ESG_Topic:
         print("Model loaded successfully")
         
     def fit_transform(self, df: pd.DataFrame, embeddings: np.ndarray):
-        
-        my_df = df[~df['ESG_class'] == -1]
-        embeddings = [embeddings[i] for i in my_df["ID"]]
-        my_df= my_df.reset_index(drop=True)
 
         #Reduce Dimension
         if self.use_umap == 1:
             embeddings = self._reduce_dimensionality(embeddings)
-        else:
-            embeddings = np.array(embeddings)
             
-        #Cluster the outcome
-        documents = self._cluster_embeddings(embeddings, my_df)
+        #Cluster 
+        df = self._cluster_embeddings(embeddings, df)
+
+        #Extract sentiment per topic
+        self.topics_sentiment = self._extract_sentiment(df)
 
         #Extract the topics keywords
-        self._extract_keywords(my_df)
+        self.topics_keywords = self._extract_keywords(df)
 
         #Extract the topics'hashtags
-        self._extract_hashtags(my_df)
+        self.topics_hashtags =  self._extract_hashtags(df)
 
-        self.df = my_df
-        return my_df
-
- 
-    def _extract_embeddings(self, documents, documents_name="", method="documents"):
-        self.embedder = Embedder(self.embed_model)
-        if method == "documents":
-            embeddings = self.embedder.embed(documents=documents, b_size=32)
-            name = str(self.embed_model) + documents_name
-            np.save(path+"/"+name, embeddings)
-            print("Extracted the embeddings successfully")
-            return embeddings
-        elif method == "MMR":
-            embeddings = self.embedder.embed(documents)
-            return embeddings
-        
+        self.df = df     
 
     def _reduce_dimensionality(self, embeddings):
+        print("Reducing dimension")
         umap = UMAP(n_neighbors=15, n_components = self.dim, min_dist=0.0, metric='cosine')
-        umap.fit(embeddings)
-        reduced_embeddings = umap.transform(embeddings)
-        print("Reduced dimension successfully")
-        
-        return np.nan_to_num(reduced_embeddings)
+        try:
+            umap.fit(embeddings)
+            reduced_embeddings = umap.transform(embeddings)
+            return np.nan_to_num(reduced_embeddings)
+        except:
+            return embeddings
 
-    def _cluster_embeddings(self, embeddings, documents):
+    def _cluster_embeddings(self, embeddings, df):
 
         if self.cluster_model == 0:
             print("Clustering with DBScan")
@@ -99,8 +82,8 @@ class ESG_Topic:
                                                               cluster_selection_method='eom',
                                                               prediction_data=True)
             hdbscan_model.fit(embeddings)
-            documents['Topic'] = hdbscan_model.labels_
-            self._update_topic_size(documents)
+            df['Topic'] = hdbscan_model.labels_
+            self._update_topic_size(df)
 
         elif self.cluster_model == 1:
             print("Clustering with KMeans")
@@ -111,34 +94,43 @@ class ESG_Topic:
             print("Number of clusters = ", self.nr_topics)
             kmeans = KMeans(self.nr_topics, random_state=42)
             kmeans.fit(embeddings)
-            documents['Topic'] = kmeans.labels_
-            self._update_topic_size(documents)
-            documents['dist_centroid'] = kmeans.inertia_
-            documents = documents.sort_values('dist_centroid')
+            df['Topic'] = kmeans.labels_
+            self._update_topic_size(df)
+            df['dist_centroid'] = kmeans.inertia_
+            df = df.sort_values('dist_centroid')
 
         elif self.cluster_model == 2:
             print("Clustering with ToMATo")
             clusters = tomato(points=embeddings, k=15)
-            documents['Topic'] = list(clusters)
-            self._update_topic_size(documents)
+            df['Topic'] = list(clusters)
+            self._update_topic_size(df)
         print("Clustered embeddings successfully")
 
-        return documents
+        return df
 
-
-    def _extract_keywords(self, documents):
-        documents_per_topic = documents.groupby(['Topic'], as_index=False).agg({'Document': ' '.join})
+    def _extract_sentiment(self, df):
+        print("Starting sentiment analysis")
+        grouped = df.groupby('Topic')
+        topics_sentiment = {}
+        for topic, cluster in grouped:
+            topics_sentiment[topic] = sum(cluster.Sentiment.to_list())/len(cluster.Sentiment.to_list())
+            print("Topic ", topic, " has a sentiment score of ", topics_sentiment[topic])
+        print("Analysed Sentiment successfully")
+        return topics_sentiment
+        
+    def _extract_keywords(self, df):
+        documents_per_topic = df.groupby(['Topic'], as_index=False).agg({'Prep_Tweet': ' '.join})
         if self.keywords_model == 0:
             self.vectorizer_model = CountVectorizer()
-            self.scores, words = self._weighting_words(documents_per_topic, documents)
-            self.topics = self._extract_words_per_topic(words)
+            self.scores, words = self._weighting_words(documents_per_topic, df)
+            return self._extract_words_per_topic(words)
 
         elif self.keywords_model == 1:
             
             vectorizer = TfidfVectorizer()
 
             # Creating a sparse matrix containing the TFIDF score for each word
-            vectors = vectorizer.fit_transform(documents_per_topic.Document.to_list())
+            vectors = vectorizer.fit_transform(documents_per_topic.Tweet.to_list())
 
             # Getting the list of words
             words = vectorizer.get_feature_names()
@@ -153,21 +145,22 @@ class ESG_Topic:
             for topic, words in topics.items():
                 topic_words = self._apply_mmr(words)
                 topics[topic] = [[word] for word in topics[topic] if word in topic_words]
-            self.topics = {label: values[:self.top_n_words] for label, values in topics.items()}
+            
+            return {label: values[:self.top_n_words] for label, values in topics.items()}
 
         elif self.keywords_model == 2:
             topics = {}
             from keybert import KeyBERT
             kw_model = KeyBERT()
-            for i, doc in enumerate(documents_per_topic.Document.to_list()):
+            for i, doc in enumerate(documents_per_topic.Tweet.to_list()):
                 topics[i] = kw_model.extract_keywords(doc, keyphrase_ngram_range=(1, 1), stop_words='english',
                                         use_mmr=True, diversity=0.2, nr_candidates=30, top_n=10)
-            self.topics = topics
+            return topics
 
     def _weighting_words(self, documents_per_topic, all_documents):
         
-        concatenated_documents = self._preprocess_text(documents_per_topic.Document.values)
-        origin_documents = self._preprocess_text(all_documents.Document.values)
+        concatenated_documents = documents_per_topic.Prep_Tweet.values
+        origin_documents = all_documents.Prep_Tweet.values
         
         # count the words in a cluster
         self.vectorizer_model.fit(concatenated_documents)
@@ -204,43 +197,33 @@ class ESG_Topic:
         for topic, topic_words in topics.items():
             words = [word[0] for word in topic_words]
             topic_words = self._apply_mmr(words)
-            topics[topic] = [(word, value) for word, value in topics[topic] if word in topic_words]
+            topics[topic] = [word for word, value in topics[topic] if word in topic_words]
         topics = {label: values[:self.top_n_words] for label, values in topics.items()}
+        # topics = {label: [e[0] for e in values] for label, values in topics.items()}
 
         return topics
+
+    def _extract_hashtags(self, df):
+        print("Starting Hashtags extraction")
+        grouped = df.groupby('Topic')
+        topics_hashtags = {}
+        for topic, cluster in grouped:
+            words = list(self._hashtags(cluster.Tweet.to_list()))
+            hashtags = self._apply_mmr(words)
+            topics_hashtags[topic] = hashtags
+        print("Extracted hashtags successfully")
+        return topics_hashtags
+
 
     def _apply_mmr(self, words, diversity:float = 0.5):
         if len(words) == 0:
             return []
         from mmr import mmr
-        word_embeddings = self._extract_embeddings(words,
-                                                    method="MMR")
-        topic_embedding = self._extract_embeddings(" ".join(words),
-                                                    method="MMR").reshape(1, -1)
+        word_embeddings = self._extract_embeddings(words)
+        topic_embedding = self._extract_embeddings(" ".join(words)).reshape(1, -1)
         topic_words = mmr(topic_embedding, word_embeddings, words,
                             top_n=self.top_n_words, diversity=diversity)
         return topic_words
-
-    def _extract_hashtags(self, df):
-        print("Starting Hashtags extraction")
-        grouped = df.groupby('Topic')
-        self.topics_hashtags = {}
-        for topic, cluster in grouped:
-            words = list(self._hashtags(cluster.Document))
-            hashtags = self._apply_mmr(words)
-            self.topics_hashtags[topic] = hashtags
-        print("Extracted hashtags successfully")
-
-    def _extract_sentiment(self, df):
-        print("Starting sentiment analysis")
-        sent_analyst = Sent_model(self.sent_model)
-        grouped = df.groupby('Topic')
-        self.topics_sentiment = {}
-        for topic, cluster in grouped:
-            self.topics_sentiment[topic] = sent_analyst.fit(cluster.Document.to_list())
-            print("Topic ", topic, " has a sentiment score of ", self.topics_sentiment[topic])
-        print("Analysed Sentiment successfully")
-
 
     def get_topics(self):
         return self.topics
@@ -251,9 +234,15 @@ class ESG_Topic:
         else:
             return False
 
-    def _update_topic_size(self, documents):
-        sizes = documents.groupby(['Topic']).count().sort_values("Document", ascending=False).reset_index()
-        self.topic_sizes = dict(zip(sizes.Topic, sizes.Document))    
+    def _update_topic_size(self, df):
+        sizes = df.groupby(['Topic']).count().sort_values("Tweet", ascending=False).reset_index()
+        self.topic_sizes = dict(zip(sizes.Topic, sizes.Tweet))    
+
+    @staticmethod
+    def _extract_embeddings(documents):
+        embedder = Embedder(1)
+        embeddings = embedder.embed(documents)
+        return embeddings
 
     @staticmethod
     def _hashtags(cluster):
