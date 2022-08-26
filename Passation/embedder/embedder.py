@@ -10,7 +10,7 @@ The embedder has three possible models.
 '''
 
 import sys
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\esg_topic")
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\embedder")
 
 from typing import List # , Tuple, Union, Mapping, Any, Callable, Iterable
 import numpy as np

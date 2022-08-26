@@ -12,14 +12,14 @@ Steps:
 '''
 
 import sys
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model")
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\esg_topic")
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation")
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\esg_topic")
 
 import re
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-
+import ast
 from typing import List, Tuple
 
 import hdbscan
@@ -29,7 +29,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.cluster import KMeans
 from tfidf_idfi import TFIDF_IDFi
-from _embedder import Embedder
+from embedder.embedder import Embedder
 from tomaster import tomato
 from yellowbrick.cluster.elbow import KElbowVisualizer
 
@@ -73,7 +73,7 @@ class ESG_Topic:
         self.topic_sizes = None
         print("Model loaded successfully")
         
-    def fit_transform(self, df: pd.DataFrame, embeddings: np.ndarray):
+    def fit_transform(self, df: pd.DataFrame):
         '''
         # Info
         ---
@@ -88,13 +88,13 @@ class ESG_Topic:
         # Params
         ---
         df: pandas dataframe,  the dataframe we're modifying
-        embeddings: numpy array, used for the clustering
 
         # Returns
         ---
         Adds the hashtags, keywords, sentiment as attributes + assigns each tweet to a topic in the dataframe
         '''
         #Reduce Dimension
+        embeddings = np.vstack([ast.literal_eval(e) for e in df.Embedding])
         if self.use_umap == 1:
             embeddings = self._reduce_dimensionality(embeddings)
             
