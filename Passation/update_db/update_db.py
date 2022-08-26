@@ -1,16 +1,29 @@
-import sys
-from xmlrpc.client import boolean
-from typing import List
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model")
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\update_db")
+'''
+# Info
+---
+This is the main script for updating the database of certain company.
+We recieve the name of the company, the language and the last update date.
+The script will do the following steps:
+    *Scrap tweets
+    *Preprocess text
+    *Filter the non-esg tweets by classifying the tweets into E, S, G or None
+    *Find the sentiment per tweet
+    *Extract the embeddings
+    *Save everything in a dataframe
+'''
 
+import sys
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation")
+sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\update_db")
+
+from typing import List
 import tweepy as tw
 import pandas as pd
 import numpy as np
 import re
-import constants as c
 import requests
 
+import scraping_constants as c
 # Tweepy API
 auth = tw.OAuthHandler(c.consumer_key, c.consumer_secret)
 auth.set_access_token(c.access_token, c.access_token_secret)
@@ -19,10 +32,6 @@ headers = {
     "Authorization": f"Bearer {c.BEARER_Token}",
     "content-type":"application/json"
 }
-
-
-path_embed_db = r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\db\embeddings"
-path_docs_db = r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Code\Full_model\db\tweets"
 
 class Update_DB:
     def __init__(self, name:str, lang:str = "en", last_date:str = "2007-08-23 10:23:00", size:int = 100, full_archive:bool = False):
@@ -71,31 +80,31 @@ class Update_DB:
             df = self.week_s()
 
         #Remove overlapping
-        self.db = self.find_db()
-        df = self.remove_inters(df)
+        if self.f_a==False:
+            df = self.remove_inters(df)
 
         #Preprocessed text:
         df["Prep_Tweet"] = self._preprocess_text(df.Tweet.to_list())
-        
+
+        #Extract embeddings
+        extracted_embed = self.extract_embeddings(df)
+        df["Embedding"] = extracted_embed.tolist()
+
         #Classify in ESG or not
-        df = self.filter_esg(df)
+        df = self.filter_esg(df, extracted_embed)
 
         #Save and remove non-esg tweets
+        df_1 = df[df['ESG_class'] == -1]
+        df_1 = df_1.reset_index(drop=True)
 
-        self.save_non_esg(df)
         df = df[df['ESG_class'] != -1]
         df = df.reset_index(drop=True)
 
         #Sentiment score
         df = self.find_sentiment(df)
-
-        #Extract embeddings
-        extracted_embed = self.extract_embeddings(df)
     
         #Add the newly created dataframe to the old database
-        df["Embedding"] = extracted_embed.tolist()
-        self.save_db(df)
-        # self.save_embed(extracted_embed)
+        self.save_db(df, df_1)
         
     def week_s(self)-> pd.DataFrame:
         '''
@@ -103,15 +112,16 @@ class Update_DB:
         ---
         This function creates a dataframe of tweets on the short term (less than a week)
 
-        # Parameters
+        # Parameters 
         ---
+        The following params are hidden in self
         text: the name we'll be using for our search
         size: the size of the dataframe 
         lang: the langage of the tweets
 
         # Results
         ---
-        We get in return a dataframe of the users and their tweets
+        We get in return a dataframe of the tweets and the dates
         '''
         print("Scraping new tweets")
         tweets = tw.Cursor(api.search ,q=self.name, lang=self.lang, tweet_mode="extended").items(self.size)
@@ -122,60 +132,6 @@ class Update_DB:
             tweet.append(i.full_text)
         return pd.DataFrame({'Tweet': tweet, 'Date': date})
 
-    
-    def find_db(self):
-        db_name = self.name + "_" + self.lang
-        try:
-            db = pd.read_csv(path_docs_db + "/" + db_name + ".csv")
-            print("Found an existing DB")
-            self.found_db = True
-            return db
-        except:
-            print("No existing DB found")
-            self.found_db = False
-            return None
-
-    def remove_inters(self, df):
-        if self.found_db:
-            return df[df["Date"] > self.last_date]
-        else:
-            return df
-
-    def save_non_esg(self, df):
-        db_name = self.name + "_" + self.lang + "_not_esg"
-        try:
-            db = pd.read_csv(path_docs_db + "/" + db_name + ".csv")
-            new_db = pd.concat([db, df[df['ESG_class'] == -1]], ignore_index=True)
-            new_db.to_csv(path_docs_db + "/" + db_name + ".csv")
-        except:
-            df[df['ESG_class'] == -1].reset_index(drop=True).to_csv(path_docs_db + "/" + db_name +".csv")
-
-    def save_embed(self, extracted_embed):
-        name = self.name + "_" + self.lang
-        if self.found_db:
-            embed_db = np.load(path_embed_db +"/"+name+".npy")
-            new_embed_db = np.concatenate((extracted_embed, embed_db), axis=0)
-            np.save(path_embed_db +"/"+name+".npy", new_embed_db)
-        else:
-            np.save(path_embed_db +"/"+name+".npy", extracted_embed)
-        print("Saved the embeddings")
-
-    def save_db(self, df): 
-        db_name = self.name + "_" + self.lang
-        if self.found_db:
-            new_db = pd.concat([df, self.db], ignore_index=True)
-            new_db.to_csv(path_docs_db + "/" + db_name +".csv")
-        else:
-            df.to_csv(path_docs_db + "/" + db_name +".csv")
-        print("Saved the DB")
-
-    def filter_esg(self, df)-> pd.DataFrame:
-        from _esg_filter import Finbert_model
-        print("Filtering ESG")
-        filter = Finbert_model(self.lang)
-        df['ESG_class'] = filter.fit(df.Prep_Tweet.to_list())
-        return df
-
     def full_as(self, maxResults: int = 100, fromDate:str = "200701010000", toDate:str = "202206260000") ->pd.DataFrame:
         '''
         # Info
@@ -184,49 +140,123 @@ class Update_DB:
 
         # Parameters
         ---
-        query: the query we'll be using for our search
-        maxRsults: the size of the dataframe maximum 100 for now
+        maxResults: the size of the dataframe maximum 100 for now
         fromDate: the start date in the archive
         toDate: the end date in the archive
 
         # Results
         ---
-        We get in return a dataframe of the tweets
+        We get in return a dataframe of the tweets and the date
         '''
+        # The query we'll be using for our search
         query = self.name +" lang:" + self.lang
         params = self.query_p(query, maxResults, fromDate, toDate)
         response = requests.request("GET", url = c.search_url, headers=headers, params = params)
         if response.status_code != 200:
             raise Exception(response.status_code, response.text)
         json_response = response.json()
-        return json_response
         tweet = []
         date = []
         for i in range(len(json_response["results"])):
+            date  += [json_response["results"][i]['created_at']]
             try:
                 tweet += [json_response["results"][i]["extended_tweet"]["full_text"]]
-                date  += [json_response["results"][i]['created_at']]
             except Exception:
                 tweet += [json_response["results"][i]["text"]]
         return pd.DataFrame({'Tweet': tweet, 'Date': date})
 
+    def save_db(self, df, df_1): 
+        db_name = self.name + "_" + self.lang
+        df.to_csv(db_name+".csv")
+        df_1.to_csv(db_name+"_"+"not_esg"+".csv")
+        print("Saved the DB")
+
+    def remove_inters(self, df:pd.DataFrame)->pd.DataFrame:
+        '''
+        # Info
+        ---
+        Removes overlapping from df by eliminating all the tweets that have a date
+        before self.last_date
+
+        # Parameters
+        ---
+        df: pandas dataframe containing the scrapped tweets
+
+        # Results
+        ---
+        Non-overlapping df of tweets
+        '''
+        return df[df["Date"] > self.last_date]
+
+    def filter_esg(self, df:pd.DataFrame, embeddings:np.ndarray=None)-> pd.DataFrame:
+        '''
+        # Info
+        ---
+        Classifies each tweet in df as
+         0:Environment
+         1:Social
+         2:Governance
+        -1:None
+
+        # Parameters
+        ---
+        df: pandas dataframe containing the tweets
+
+        # Results
+        ---
+        df with a column containing the esg_class
+        '''
+        from esg_filter.esg_filter import ESG_Filter
+        filter = ESG_Filter(model=2, lang=self.lang)
+        df['ESG_class'] = filter.fit(documents=df.Prep_Tweet.to_list(), embeddings=embeddings)
+        # from esg_filter.finbert_model import Finbert_model
+        # filter = Finbert_model(self.lang)
+        # df['ESG_class'] = filter.fit(df.Prep_Tweet.to_list())
+        return df
+
     @staticmethod
-    def extract_embeddings(df):
-        from esg_topic._embedder import Embedder
+    def extract_embeddings(df:pd.DataFrame)->pd.DataFrame:
+        '''
+        # Info
+        ---
+        Extracts an embedding for each tweet in df
+
+        # Parameters
+        ---
+        df: pandas dataframe containing the tweets
+
+        # Results
+        ---
+        df with a column containing the embedding array
+        '''
+        from embedder.embedder import Embedder
         print("Extracting Embeddings")
         embedder = Embedder(1)
         return embedder.embed(documents=df.Prep_Tweet.to_list(), b_size=32)
 
     @staticmethod
-    def find_sentiment(df)-> pd.DataFrame:
+    def find_sentiment(df:pd.DataFrame)-> pd.DataFrame:
+        '''
+        # Info
+        ---
+        Attributes a sentiment score between -1 and 1 for each tweet in df
+
+        # Parameters
+        ---
+        df: pandas dataframe containing the tweets
+
+        # Results
+        ---
+        df with a column containing the sentiment score
+        '''
         from sentiment_analysis import Sent_model
         print("Analysing sentiment")
-        sent = Sent_model(1)
+        sent = Sent_model(0)
         df['Sentiment'] = sent.doc_score(df.Prep_Tweet.to_list())
         return df
 
     @staticmethod
-    def _preprocess_text(documents:List)->List:
+    def _preprocess_text(documents:List[str])->List[str]:
         """ Basic preprocessing of text
         Steps:
             * Remove # sign 

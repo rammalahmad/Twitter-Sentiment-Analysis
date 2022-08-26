@@ -1,18 +1,6 @@
 '''
-This file contains all the constants of SurfMetrics twitter project
+This file contains esg dictionnaries that will be used as a reference to classify the input text into E, S, G or None
 '''
-
-#Scraping:
-
-BEARER_Token = "AAAAAAAAAAAAAAAAAAAAAOkFdgEAAAAANo34nERWQRp4cssRA2FU80w2ohM%3D8t2Z4Lh5MakNsaKrRradEFf36nOTxg9SjgJa3eISYggqxcYNdY"
-consumer_key= 'KXHbQNIaed9ywyS1lmpKSXI3R'
-consumer_secret= 'OivZv9DtACA0J0evHAG3bC1DeZ29l1pz5CM7LaO5lNFibJq7rl'
-access_token= '1534544118893973505-SkeusWYlvDUip4TlXKSK4hiyEpgjCZ'
-access_token_secret= 'h6cmAj92Atkq6zDfiipBTb4gFEdjqN2gfnpJFHgK1tg7M'
-search_url = "https://api.twitter.com/1.1/tweets/search/fullarchive/Scraping.json"
-
-
-#ESG Filtering
 
 E_dic_fr = ["carbone", "durable", "empreinte", "gaspillage", "co2", "energie fossile", 
         "contamination", "environnement", " déchets","activités minières et extractives", 
