@@ -12,10 +12,6 @@ The script will do the following steps:
     *Save everything in a dataframe
 '''
 
-import sys
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation")
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\update_db")
-
 from typing import List
 import tweepy as tw
 import pandas as pd
@@ -23,7 +19,8 @@ import numpy as np
 import re
 import requests
 
-import scraping_constants as c
+import update_db.scraping_constants as c
+
 # Tweepy API
 auth = tw.OAuthHandler(c.consumer_key, c.consumer_secret)
 auth.set_access_token(c.access_token, c.access_token_secret)
@@ -104,7 +101,7 @@ class Update_DB:
         df = self.find_sentiment(df)
     
         #Add the newly created dataframe to the old database
-        self.save_db(df, df_1)
+        return df, df_1
         
     def week_s(self)-> pd.DataFrame:
         '''
@@ -206,7 +203,7 @@ class Update_DB:
         ---
         df with a column containing the esg_class
         '''
-        from esg_filter.esg_filter import ESG_Filter
+        from update_db.esg_filter.esg_filter import ESG_Filter
         filter = ESG_Filter(model=2, lang=self.lang)
         df['ESG_class'] = filter.fit(documents=df.Prep_Tweet.to_list(), embeddings=embeddings)
         # from esg_filter.finbert_model import Finbert_model
@@ -249,7 +246,7 @@ class Update_DB:
         ---
         df with a column containing the sentiment score
         '''
-        from sentiment_analysis import Sent_model
+        from update_db.sentiment_analysis import Sent_model
         print("Analysing sentiment")
         sent = Sent_model(0)
         df['Sentiment'] = sent.doc_score(df.Prep_Tweet.to_list())
