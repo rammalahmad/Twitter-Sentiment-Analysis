@@ -11,10 +11,6 @@ Steps:
         *Extract hashtags
 '''
 
-import sys
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation")
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\esg_topic")
-
 import re
 import numpy as np
 import pandas as pd
@@ -28,7 +24,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.cluster import KMeans
-from tfidf_idfi import TFIDF_IDFi
+from esg_topic.tfidf_idfi import TFIDF_IDFi
 from embedder.embedder import Embedder
 from tomaster import tomato
 from yellowbrick.cluster.elbow import KElbowVisualizer
@@ -376,7 +372,7 @@ class ESG_Topic:
         '''
         if len(words) == 0:
             return []
-        from mmr import mmr
+        from esg_topic.mmr import mmr
         word_embeddings = self._extract_embeddings(words)
         topic_embedding = self._extract_embeddings(" ".join(words)).reshape(1, -1)
         topic_words = mmr(topic_embedding, word_embeddings, words,

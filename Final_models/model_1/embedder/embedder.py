@@ -1,7 +1,7 @@
 '''
 # Info
 ---
-In this script we define the Embedder script whose primary role is to extract the embeddings from
+In this script we define the Embedder whose primary role is to extract the embeddings from
 the texts.
 The embedder has three possible models.
 0: ESG_BERT
@@ -9,8 +9,6 @@ The embedder has three possible models.
 2: xlm-roBERTa-base
 '''
 
-import sys
-sys.path.append(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\embedder")
 
 from typing import List # , Tuple, Union, Mapping, Any, Callable, Iterable
 import numpy as np
@@ -34,14 +32,14 @@ class Embedder:
         '''
         self.index=index
         if index == 0:
-            from ESG_BERT import model, tokenizer
+            from embedder.ESG_BERT import model, tokenizer
             self.model = model
             self.tokenizer = tokenizer
         elif index == 1:
-            from sbert import model
+            from embedder.sbert import model
             self.model = model
         elif index == 2:
-            from xlm_roberta import model, tokenizer
+            from embedder.xlm_roberta import model, tokenizer
             self.model = model
             self.tokenizer = tokenizer
         
