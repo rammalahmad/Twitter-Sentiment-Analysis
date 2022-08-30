@@ -144,8 +144,10 @@ Article + Rapport de stage
 Plan:
 
 Algorithm:
-Add the databases
-Start the documentation
+Add the databases done
+add paramters for the updater
+document smt & db_master
+
 Unit testing
 
 Presentation
