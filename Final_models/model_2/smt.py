@@ -14,29 +14,34 @@ class Surf_Mes_Tweets:
         updater = Update_DB(name=self.name, lang=self.lang, last_date=self.db_master.find_last_date())
         df_esg, df_not_esg = updater.fit()
         
-        
-        df_esg['log'] = ['C' for i in range(len(df_esg))]
+        # Put together the new database
+        df_not_esg['log'] = 'C'
+        df_esg['log'] = 'C'
         if self.db_master.found_db:
-            old_db = self.db_master.db[['Tweet', 'Date', 'Prep_Tweet', 'Embedding', 'ESG_class', 'Sentiment']]
-            old_db.Embedding = old_db['Embedding'].apply(lambda x: ast.literal_eval(x))
-            old_db['log'] = ['U' for i in range(len(old_db))]
+            old_db = self.db_master.db[['Tweet', 'Date', 'Embedding', 'ESG_class', 'Sentiment']]
+            old_db['Embedding'] = old_db['Embedding'].apply(lambda x: ast.literal_eval(x))
+            old_db['log'] = 'U'
 
             new_db = pd.concat([df_esg, old_db], ignore_index=True)
         else:
             new_db = df_esg
 
+        # Cluster the outcome
         topicer = ESG_Topic()
         new_db = topicer.fit_transform(new_db)
-        
+
+        new_db = new_db.rename(columns={"Topic": "Cluster"})
+        new_db = new_db.drop(columns=['Prep_Tweet'])
+
         db_name = self.name+"_"+self.lang
 
         # Save the logs
-        self.db_master.save_log(df=df_not_esg, df_name=db_name+"_not_esg")
-        self.db_master.save_df(df=new_db, db_name=db_name+"_log")
+        self.db_master.update_df(df=df_not_esg, db_name=db_name+"_not_esg_log")
+        self.db_master.update_df(df=new_db, db_name=db_name+"_log")
 
         # Save the newly acquired tweets
-        self.db_master.save_df(df=df_not_esg, db_name=db_name+"_not_esg")
-        new_db.drop(columns=['log']).to_csv(r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Final_models\model_2\data" + "\\"+db_name+".csv", index=False)
+        self.db_master.update_df(df=df_not_esg.drop(columns=['log']), db_name=db_name+"_not_esg")
+        self.db_master.save_df(df=new_db.drop(columns=['log']), db_name=db_name)
 
         # Refresh the found db in DB_Master
         self.db_master.find_db()
@@ -50,7 +55,7 @@ class Surf_Mes_Tweets:
 
     @staticmethod
     def visu_elements(df:pd.DataFrame):
-        grouped = df.groupby('Topic')
+        grouped = df.groupby('Cluster')
         topics_sentiment = {}
         topics_keywords = {}
         topics_hashtags = {}
@@ -59,7 +64,7 @@ class Surf_Mes_Tweets:
             topics_keywords[topic] = list(set([j for sub in [ast.literal_eval(e) for e in cluster.Keywords.to_list()] for j in sub]))
             topics_hashtags[topic] = list(set([j for sub in [ast.literal_eval(e) for e in cluster.Hashtags.to_list()] for j in sub]))
 
-        df['Topic_sentiment'] = df.apply(lambda row : topics_sentiment[row['Topic']], axis=1)
-        df['Topic_Keywords'] = df.apply(lambda row : topics_keywords[row['Topic']], axis=1)
-        df['Topic_Hashtags'] = df.apply(lambda row : topics_hashtags[row['Topic']], axis=1)
+        df['Topic_sentiment'] = df.apply(lambda row : topics_sentiment[row['Cluster']], axis=1)
+        df['Topic_Keywords'] = df.apply(lambda row : topics_keywords[row['Cluster']], axis=1)
+        df['Topic_Hashtags'] = df.apply(lambda row : topics_hashtags[row['Cluster']], axis=1)
         return df

@@ -31,44 +31,22 @@ class DB_Master:
     def date_interval(self):
         print("The DataBase we have is from: ", str(self.db.Date.to_list()[-1]), "to: ", str(self.db.Date.to_list()[0]))
 
-    def save_df(self, db_name, df):
+    def update_df(self, db_name, df):
         try:
             old_db = pd.read_csv(path_data + "/" + db_name + ".csv")
             new_db = pd.concat([df, old_db], ignore_index=True)
             new_db.to_csv(path_data+ "/" + db_name + ".csv", index=False)
         except:
             df.to_csv(path_data+ "/" + db_name +".csv", index=False)
+    
+    def save_df(self, db_name, df):
+        df.to_csv(path_data+ "/" + db_name +".csv", index=False)
 
     def fit(self, sdate, edate):
         return self.db[(self.db.Date >= sdate) & (self.db.Date <= edate)]        
-    
 
     def save_log(self, df, df_name):
         file_name = df_name + "_log"
         create_list = ["C" for i in range(len(df))]
         df["log"] = create_list
         df.to_csv(path_data + "\\" + file_name + ".csv", index=False)
-        
-    # def save_log(self, topicer):
-    #     dir_name = path_logs + "\\" + self.name+"_"+self.lang
-    #     if not os.path.exists(dir_name):
-    #         os.mkdir(dir_name)
-    #     now = datetime.now()
-    #     now = now.strftime("%d_%m_%Y_%H_%M_%S")
-    #     dir = dir_name+"\\"+now
-    #     if not os.path.exists(dir):
-    #         os.mkdir(dir)
-    #     topicer.df.to_csv(dir+"\\"+"data.csv")
-    #     self.save_dict(dir, topicer.topics_sentiment, "sentiment")
-    #     self.save_dict(dir, topicer.topics_keywords, "keywords")
-    #     self.save_dict(dir, topicer.topics_hashtags, "hashtags")
-   
-    # @staticmethod
-    # def save_dict(dir, dict, name):
-    #     my_json = json.dumps(dict)
-    #     # open file for writing, "w" 
-    #     f = open(dir+"\\"+name+".json","w")
-    #     # write json object to file
-    #     f.write(my_json)
-    #     # close file
-    #     f.close()
