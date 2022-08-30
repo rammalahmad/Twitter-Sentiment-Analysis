@@ -64,7 +64,7 @@ class Surf_Mes_Tweets:
             topics_keywords[topic] = list(set([j for sub in [ast.literal_eval(e) for e in cluster.Keywords.to_list()] for j in sub]))
             topics_hashtags[topic] = list(set([j for sub in [ast.literal_eval(e) for e in cluster.Hashtags.to_list()] for j in sub]))
 
-        df['Topic_sentiment'] = df.apply(lambda row : topics_sentiment[row['Cluster']], axis=1)
-        df['Topic_Keywords'] = df.apply(lambda row : topics_keywords[row['Cluster']], axis=1)
-        df['Topic_Hashtags'] = df.apply(lambda row : topics_hashtags[row['Cluster']], axis=1)
+        df['Cluster_sentiment'] = df.apply(lambda row : topics_sentiment[row['Cluster']], axis=1)
+        df['Cluster_Keywords'] = df.apply(lambda row : topics_keywords[row['Cluster']], axis=1)
+        df['Cluster_Hashtags'] = df.apply(lambda row : topics_hashtags[row['Cluster']], axis=1)
         return df

@@ -101,7 +101,7 @@ class ESG_Topic:
         #Cluster 
         df = self._cluster_embeddings(embeddings, df)
 
-        #Extract sentiment per topic
+        #Extract sentiment per topicq
         self.topics_sentiment = self._extract_sentiment(df)
 
         #Extract the topics keywords
