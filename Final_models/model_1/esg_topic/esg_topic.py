@@ -89,6 +89,10 @@ class ESG_Topic:
         ---
         Adds the hashtags, keywords, sentiment as attributes + assigns each tweet to a topic in the dataframe
         '''
+
+        #Preprocessed text:
+        df["Prep_Tweet"] = self._preprocess_text(df.Tweet.to_list())
+
         #Reduce Dimension
         embeddings = np.vstack([ast.literal_eval(e) for e in df.Embedding])
         if self.use_umap == 1:
@@ -106,7 +110,9 @@ class ESG_Topic:
         #Extract the topics'hashtags
         self.topics_hashtags =  self._extract_hashtags(df)
 
-        self.df = df     
+        df = self.add_rest(df)
+
+        return df    
 
     def _reduce_dimensionality(self, embeddings:np.ndarray)->np.ndarray:
         '''
@@ -167,8 +173,8 @@ class ESG_Topic:
             kmeans.fit(embeddings)
             df['Topic'] = kmeans.labels_
             self._update_topic_size(df)
-            df['dist_centroid'] = kmeans.inertia_
-            df = df.sort_values('dist_centroid')
+            #df['dist_centroid'] = kmeans.inertia_
+            #df = df.sort_values('dist_centroid')
 
         elif self.cluster_model == 2:
             print("Clustering with ToMATo")
@@ -379,6 +385,12 @@ class ESG_Topic:
                             top_n=self.top_n_words, diversity=diversity)
         return topic_words
 
+    def add_rest(self, df):
+        df['Cluster_Sentiment'] = df.apply(lambda row : self.topics_sentiment[row['Topic']], axis=1)
+        df['Cluster_Keywords'] = df.apply(lambda row : self.topics_keywords[row['Topic']], axis=1)
+        df['Cluster_Hashtags'] = df.apply(lambda row : self.topics_hashtags[row['Topic']], axis=1)
+        return df
+
     def get_topics(self)->dict:
         '''
         # Info
@@ -496,3 +508,21 @@ class ESG_Topic:
             scores = np.array([matrix[row, value] if value is not None else 0 for value in values])
             top_values.append(scores)
         return np.array(top_values)
+
+
+    @staticmethod
+    def _preprocess_text(documents:List[str])->List[str]:
+        """ Basic preprocessing of text
+        Steps:
+            * Remove # sign 
+            * Remove urls
+            * Remove @ tags
+            * Remove RT (retweet)
+        """
+        cleaned_documents = [doc.replace("#", "") for doc in documents]
+        cleaned_documents = [re.sub(r"http\S+", "", doc) for doc in cleaned_documents]
+        cleaned_documents = [re.sub(r"https\S+", "", doc) for doc in cleaned_documents]
+        cleaned_documents = [re.sub(r"@\S+", "", doc) for doc in cleaned_documents]
+        cleaned_documents = [doc.replace("RT", "") for doc in cleaned_documents]
+
+        return cleaned_documents

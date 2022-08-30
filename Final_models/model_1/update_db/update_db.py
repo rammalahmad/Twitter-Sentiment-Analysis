@@ -100,6 +100,9 @@ class Update_DB:
         #Sentiment score
         df = self.find_sentiment(df)
     
+        df = df.drop(columns=['Prep_Tweet'])
+        df_1 = df_1.drop(columns=['Prep_Tweet'])
+
         #Add the newly created dataframe to the old database
         return df, df_1
         
@@ -161,12 +164,6 @@ class Update_DB:
             except Exception:
                 tweet += [json_response["results"][i]["text"]]
         return pd.DataFrame({'Tweet': tweet, 'Date': date})
-
-    def save_db(self, df, df_1): 
-        db_name = self.name + "_" + self.lang
-        df.to_csv(db_name+".csv")
-        df_1.to_csv(db_name+"_"+"not_esg"+".csv")
-        print("Saved the DB")
 
     def remove_inters(self, df:pd.DataFrame)->pd.DataFrame:
         '''
