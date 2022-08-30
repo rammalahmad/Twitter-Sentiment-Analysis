@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 import json
 
-path_data = r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\data"
+path_data = r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Final_models\model_2\data"
 
 class DB_Master:
     def __init__(self, name:str, lang:str = "en"):
@@ -35,9 +35,9 @@ class DB_Master:
         try:
             old_db = pd.read_csv(path_data + "/" + db_name + ".csv")
             new_db = pd.concat([df, old_db], ignore_index=True)
-            new_db.to_csv(path_data+ "/" + db_name + ".csv")
+            new_db.to_csv(path_data+ "/" + db_name + ".csv", index=False)
         except:
-            df.to_csv(path_data+ "/" + db_name +".csv")
+            df.to_csv(path_data+ "/" + db_name +".csv", index=False)
 
     def fit(self, sdate, edate):
         return self.db[(self.db.Date >= sdate) & (self.db.Date <= edate)]        
@@ -47,7 +47,7 @@ class DB_Master:
         file_name = df_name + "_log"
         create_list = ["C" for i in range(len(df))]
         df["log"] = create_list
-        df.to_csv(path_data + "\\" + file_name + ".csv")
+        df.to_csv(path_data + "\\" + file_name + ".csv", index=False)
         
     # def save_log(self, topicer):
     #     dir_name = path_logs + "\\" + self.name+"_"+self.lang

@@ -146,11 +146,11 @@ Plan:
 Algorithm:
 Add the databases
 Start the documentation
-
-Modify based on backend
 Unit testing
+
 Presentation
 Article
 Rapport
 Test how long does it take
 
+Write all one draft, then work on the organisation
