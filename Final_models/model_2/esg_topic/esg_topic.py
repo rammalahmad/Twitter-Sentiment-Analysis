@@ -89,7 +89,11 @@ class ESG_Topic:
         ---
         Adds the hashtags, keywords, sentiment as attributes + assigns each tweet to a topic in the dataframe
         '''
+        #Preprocessed text:
+        df["Prep_Tweet"] = self._preprocess_text(df.Tweet.to_list())
+
         #Reduce Dimension
+
         embeddings = np.vstack([e for e in df.Embedding])
         if self.use_umap == 1:
             embeddings = self._reduce_dimensionality(embeddings)
@@ -511,3 +515,20 @@ class ESG_Topic:
             if e in text:
                 result+=[e]
         return result
+
+    @staticmethod
+    def _preprocess_text(documents:List[str])->List[str]:
+        """ Basic preprocessing of text
+        Steps:
+            * Remove # sign 
+            * Remove urls
+            * Remove @ tags
+            * Remove RT (retweet)
+        """
+        cleaned_documents = [doc.replace("#", "") for doc in documents]
+        cleaned_documents = [re.sub(r"http\S+", "", doc) for doc in cleaned_documents]
+        cleaned_documents = [re.sub(r"https\S+", "", doc) for doc in cleaned_documents]
+        cleaned_documents = [re.sub(r"@\S+", "", doc) for doc in cleaned_documents]
+        cleaned_documents = [doc.replace("RT", "") for doc in cleaned_documents]
+
+        return cleaned_documents
