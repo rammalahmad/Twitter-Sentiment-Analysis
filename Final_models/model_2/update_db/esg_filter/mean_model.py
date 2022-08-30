@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 
-path = r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Passation\update_db\esg_filter\data" + "\\"
+path = r"C:\Users\User\Desktop\Ahmad\Stages\SurfMetrics\Git\Final_models\model_2\update_db\esg_filter\data" + "\\"
 
 
 class Mean_model:

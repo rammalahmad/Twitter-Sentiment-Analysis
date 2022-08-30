@@ -90,7 +90,7 @@ class ESG_Topic:
         Adds the hashtags, keywords, sentiment as attributes + assigns each tweet to a topic in the dataframe
         '''
         #Reduce Dimension
-        embeddings = np.vstack([ast.literal_eval(e) for e in df.Embedding])
+        embeddings = np.vstack([e for e in df.Embedding])
         if self.use_umap == 1:
             embeddings = self._reduce_dimensionality(embeddings)
             
@@ -106,7 +106,9 @@ class ESG_Topic:
         #Extract the topics'hashtags
         self.topics_hashtags =  self._extract_hashtags(df)
 
-        self.df = df     
+        # Add Hashtags, Keywords, Sentiment to the dataframe
+        df = self.add_rest(df) 
+        return df  
 
     def _reduce_dimensionality(self, embeddings:np.ndarray)->np.ndarray:
         '''
@@ -167,8 +169,8 @@ class ESG_Topic:
             kmeans.fit(embeddings)
             df['Topic'] = kmeans.labels_
             self._update_topic_size(df)
-            df['dist_centroid'] = kmeans.inertia_
-            df = df.sort_values('dist_centroid')
+            # df['dist_centroid'] = kmeans.inertia_
+            # df = df.sort_values('dist_centroid')
 
         elif self.cluster_model == 2:
             print("Clustering with ToMATo")
@@ -379,6 +381,11 @@ class ESG_Topic:
                             top_n=self.top_n_words, diversity=diversity)
         return topic_words
 
+    def add_rest(self, df):
+        #df['avg_sentiment'] = df['Topic'].apply(lambda x : self.topics_sentiment[x])
+        df['Keywords'] = df.apply(lambda row : self.keywords_text(self.topics_keywords[row['Topic']], row['Tweet']), axis=1)
+        df['Hashtags'] = df.apply(lambda row : self.keywords_text(self.topics_hashtags[row['Topic']], row['Tweet']), axis=1)
+        return df
     def get_topics(self)->dict:
         '''
         # Info
@@ -496,3 +503,11 @@ class ESG_Topic:
             scores = np.array([matrix[row, value] if value is not None else 0 for value in values])
             top_values.append(scores)
         return np.array(top_values)
+
+    @staticmethod
+    def keywords_text(words_list:List[str], text:str):
+        result = []
+        for e in words_list:
+            if e in text:
+                result+=[e]
+        return result
