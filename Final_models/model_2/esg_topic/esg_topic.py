@@ -228,8 +228,11 @@ class ESG_Topic:
         topics_hashtags = {}
         for topic, cluster in grouped:
             words = list(self._hashtags(cluster.Tweet.to_list()))
-            hashtags = self._apply_mmr(words)
-            topics_hashtags[topic] = hashtags
+            if len(words)<self.top_n_words:
+                topics_hashtags[topic] = words
+            else:
+                hashtags = self._apply_mmr(words)
+                topics_hashtags[topic] = hashtags
         print("Extracted hashtags successfully")
         return topics_hashtags
         
