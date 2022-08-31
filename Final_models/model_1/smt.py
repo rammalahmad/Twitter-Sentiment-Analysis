@@ -8,7 +8,7 @@ class Surf_Mes_Tweets:
         self.lang = lang
         self.db_master = DB_Master(name=name, lang=lang)
 
-    def update(self):
+    def refresh(self):
         updater = Update_DB(name=self.name, lang=self.lang, last_date=self.db_master.find_last_date())
         df_esg, df_not_esg = updater.fit()
 
@@ -32,7 +32,7 @@ class Surf_Mes_Tweets:
         topicer = ESG_Topic()
         df = topicer.fit_transform(df)
         df = df.rename(columns={"Topic": "Cluster"})
-        df = df.drop(columns=['Prep_Tweet'])
+        df = df.drop(columns=['Embedding', 'Prep_Tweet'])
         # Save the topicer work
         db_name = self.name+"_"+self.lang
         self.db_master.save_df(df=df, db_name=db_name+"_"+str(sdate).replace(":", ".")+"_"+str(edate).replace(":", "."))
