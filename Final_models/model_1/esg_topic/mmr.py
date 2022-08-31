@@ -54,7 +54,7 @@ def mmr(doc_embedding: np.ndarray,
             keywords_idx.append(mmr_idx)
             candidates_idx.remove(mmr_idx)
         except:
-            print("A problem emerged in MMR probably because no hashtags were found for a certain topic")
+            print("A problem emerged in MMR because no hashtags were found for a certain topic")
    
 
     return [words[idx] for idx in keywords_idx]

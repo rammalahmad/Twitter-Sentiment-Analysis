@@ -13,25 +13,18 @@ The script will do the following steps:
 '''
 
 from typing import List
-import tweepy as tw
+from update_db.scraper import Scraper
 import pandas as pd
 import numpy as np
 import re
-import requests
 
-import update_db.scraping_constants as c
-
-# Tweepy API
-auth = tw.OAuthHandler(c.consumer_key, c.consumer_secret)
-auth.set_access_token(c.access_token, c.access_token_secret)
-api = tw.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-headers = {
-    "Authorization": f"Bearer {c.BEARER_Token}",
-    "content-type":"application/json"
-}
 
 class Update_DB:
-    def __init__(self, name:str, lang:str = "en", last_date:str = "2007-08-23 10:23:00", size:int = 100, full_archive:bool = False):
+    def __init__(self, name:str, lang:str = "en", last_date:str = "2007-08-23 10:23:00", 
+                full_archive:bool = False,
+                embed_model:int = 1,
+                filter_model:int = 2,
+                sent_model:int = 1):
         '''
         # Info
         ---
@@ -42,17 +35,20 @@ class Update_DB:
         name: string, the name of the company
         lang: string, the langugage used for the company
         last_date: string, last date in the stored database
-        size: int, size of the scrapped db, we're limited to 500 per request otherwise the scraper will 
-        sleep for some minutes before resuming
         full_archive: boolean, wether we do a full_archive search or just a weekly search.
+        embed_model: int, the embedding model 0=ESG_BERT 1=SBERT 2=xlm-RoBERTa-base
+        filter_model: int, the esg_filter model 0=FinBERT 1=Mean_model 2=GS_model
+        sent_model: int, the sentiment model 0=RoBERTa_Twitter 1=BERT_base_uncased
         '''
 
-        print("Launching the updater")
+        print("Updating the db for", name, "in", lang)
         self.name = name
         self.lang = lang
         self.last_date = last_date
-        self.size = size
         self.f_a = full_archive
+        self.embed_model = embed_model
+        self.filter_model = filter_model
+        self.sent_model = sent_model
 
     def fit(self) -> pd.DataFrame:
         '''
@@ -69,12 +65,11 @@ class Update_DB:
         ---
         Dataframe with preprocessed tweets, esg_category, sentiment and embedding
         '''
+    
+        # Get the Database
 
-        #Scrap one week db:
-        if self.f_a:
-            df = self.full_as()
-        else:
-            df = self.week_s()
+        scraper = Scraper(name=self.name, lang=self.lang, model=int(self.f_a))
+        df = scraper.fit()
 
         #Remove overlapping
         if self.f_a==False:
@@ -105,65 +100,6 @@ class Update_DB:
 
         #Add the newly created dataframe to the old database
         return df, df_1
-        
-    def week_s(self)-> pd.DataFrame:
-        '''
-        # Info
-        ---
-        This function creates a dataframe of tweets on the short term (less than a week)
-
-        # Parameters 
-        ---
-        The following params are hidden in self
-        text: the name we'll be using for our search
-        size: the size of the dataframe 
-        lang: the langage of the tweets
-
-        # Results
-        ---
-        We get in return a dataframe of the tweets and the dates
-        '''
-        print("Scraping new tweets")
-        tweets = tw.Cursor(api.search ,q=self.name, lang=self.lang, tweet_mode="extended").items(self.size)
-        tweet =[]
-        date = []
-        for i in tweets :
-            date.append(i.created_at)
-            tweet.append(i.full_text)
-        return pd.DataFrame({'Tweet': tweet, 'Date': date})
-
-    def full_as(self, maxResults: int = 100, fromDate:str = "200701010000", toDate:str = "202206260000") ->pd.DataFrame:
-        '''
-        # Info
-        ---
-        This function creates a dataframe of tweets on the long term (full archive)
-
-        # Parameters
-        ---
-        maxResults: the size of the dataframe maximum 100 for now
-        fromDate: the start date in the archive
-        toDate: the end date in the archive
-
-        # Results
-        ---
-        We get in return a dataframe of the tweets and the date
-        '''
-        # The query we'll be using for our search
-        query = self.name +" lang:" + self.lang
-        params = self.query_p(query, maxResults, fromDate, toDate)
-        response = requests.request("GET", url = c.search_url, headers=headers, params = params)
-        if response.status_code != 200:
-            raise Exception(response.status_code, response.text)
-        json_response = response.json()
-        tweet = []
-        date = []
-        for i in range(len(json_response["results"])):
-            date  += [json_response["results"][i]['created_at']]
-            try:
-                tweet += [json_response["results"][i]["extended_tweet"]["full_text"]]
-            except Exception:
-                tweet += [json_response["results"][i]["text"]]
-        return pd.DataFrame({'Tweet': tweet, 'Date': date})
 
     def remove_inters(self, df:pd.DataFrame)->pd.DataFrame:
         '''
@@ -201,15 +137,14 @@ class Update_DB:
         df with a column containing the esg_class
         '''
         from update_db.esg_filter.esg_filter import ESG_Filter
-        filter = ESG_Filter(model=2, lang=self.lang)
+        filter = ESG_Filter(model=self.filter_model, lang=self.lang)
         df['ESG_class'] = filter.fit(documents=df.Prep_Tweet.to_list(), embeddings=embeddings)
         # from esg_filter.finbert_model import Finbert_model
         # filter = Finbert_model(self.lang)
         # df['ESG_class'] = filter.fit(df.Prep_Tweet.to_list())
         return df
 
-    @staticmethod
-    def extract_embeddings(df:pd.DataFrame)->pd.DataFrame:
+    def extract_embeddings(self, df:pd.DataFrame)->pd.DataFrame:
         '''
         # Info
         ---
@@ -225,11 +160,10 @@ class Update_DB:
         '''
         from embedder.embedder import Embedder
         print("Extracting Embeddings")
-        embedder = Embedder(1)
+        embedder = Embedder(self.embed_model)
         return embedder.embed(documents=df.Prep_Tweet.to_list(), b_size=32)
 
-    @staticmethod
-    def find_sentiment(df:pd.DataFrame)-> pd.DataFrame:
+    def find_sentiment(self, df:pd.DataFrame)-> pd.DataFrame:
         '''
         # Info
         ---
@@ -245,7 +179,7 @@ class Update_DB:
         '''
         from update_db.sentiment_analysis import Sent_model
         print("Analysing sentiment")
-        sent = Sent_model(0)
+        sent = Sent_model(self.sent_model)
         df['Sentiment'] = sent.doc_score(df.Prep_Tweet.to_list())
         return df
 
@@ -265,26 +199,3 @@ class Update_DB:
         cleaned_documents = [doc.replace("RT", "") for doc in cleaned_documents]
 
         return cleaned_documents
-
-    @staticmethod
-    def query_p(text:str, maxResults: int = 100, fromDate:str = "200701010000", toDate:str = "202206260000") -> dict:
-        '''
-        # Info
-        ---
-        This function writes the query parameters in a proper
-        way
-
-        # Parameter
-        ---
-        A text that corresponds to our query keyword
-        An interger corresponding to the maximal number of tweets 
-        that we can capture
-        Two strings corresponding to the starting date and the 
-        ending date of our scraping
-
-        # Results
-        ---
-        We get in result a dictionary that will be used as a parameter
-        to do the research.
-        '''
-        return {"query": text ,"maxResults": maxResults ,"fromDate":fromDate,"toDate":toDate}
