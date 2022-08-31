@@ -5,20 +5,32 @@ import pandas as pd
 import ast
  
 class Surf_Mes_Tweets:
-    def __init__(self, name:str, lang:str):
+    def __init__(self, name:str):
         self.name = name
-        self.lang = lang
-        self.db_master = DB_Master(name=name, lang=lang)
+        self.db_master = DB_Master(name=name)
 
     def refresh(self):
-        updater = Update_DB(name=self.name, lang=self.lang, last_date=self.db_master.find_last_date())
-        df_esg, df_not_esg = updater.fit()
+        # Find english tweets
+        updater = Update_DB(name=self.name, lang="en", last_date=self.db_master.find_last_date())
+        df_esg_en, df_not_esg_en = updater.fit()
+
+        # Find french tweets
+        updater = Update_DB(name=self.name, lang="fr", last_date=self.db_master.find_last_date())
+        df_esg_fr, df_not_esg_fr = updater.fit()
+
+        # Merge the french with english
+        df_esg = pd.concat([df_esg_en, df_esg_fr], ignore_index=True)
+        df_not_esg = pd.concat([df_not_esg_en, df_not_esg_fr], ignore_index=True)
+
+        # Sort them per date
+        df_esg.sort_values(by='Date', ascending = False, inplace=True)
+        df_not_esg.sort_values(by='Date', ascending = False, inplace=True)
         
         # Put together the new database
         df_not_esg['log'] = 'C'
         df_esg['log'] = 'C'
         if self.db_master.found_db:
-            old_db = self.db_master.db[['Tweet', 'Date', 'Embedding', 'ESG_class', 'Sentiment']]
+            old_db = self.db_master.db[['Tweet', 'Date', 'Language', 'Embedding', 'ESG_class', 'Sentiment']]
             old_db['Embedding'] = old_db['Embedding'].apply(lambda x: ast.literal_eval(x))
             old_db['log'] = 'U'
 
@@ -33,7 +45,7 @@ class Surf_Mes_Tweets:
         new_db = new_db.rename(columns={"Topic": "Cluster"})
         new_db = new_db.drop(columns=['Prep_Tweet'])
 
-        db_name = self.name+"_"+self.lang
+        db_name = self.name
 
         # Save the logs
         self.db_master.update_df(df=df_not_esg, db_name=db_name+"_not_esg_log")
@@ -48,10 +60,15 @@ class Surf_Mes_Tweets:
 
     def visualise(self, sdate:str = "2006-08-23 10:23:00", edate:str = "2023-08-23 10:24:00"):
         df = self.db_master.fit(sdate, edate)
+
+        # Add cluster sentiment, keywords and hashtags
         df = self.visu_elements(df)
-        df = df.drop(columns=['Embedding', 'Prep_Tweet', 'Keywords', 'Hashtags'])
+
+        # Remove irrelevant columns
+        df = df.drop(columns=['Embedding', 'Keywords', 'Hashtags'])
+
         # Save the topicer work
-        db_name = self.name+"_"+self.lang
+        db_name = self.name
         self.db_master.save_df(df=df, db_name=db_name+"_"+str(sdate).replace(":", ".")+"_"+str(edate).replace(":", "."))
 
     @staticmethod

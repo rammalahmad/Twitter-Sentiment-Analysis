@@ -144,15 +144,13 @@ Article + Rapport de stage
 Plan:
 
 Algorithm:
-Add the databases done
-add paramters for the updater
-document smt & db_master
+Add weights to hashtags (regroup all texts from a cluster and see the number of occurences of each hashtag)
 
+Documentation
 Unit testing
-
 Presentation
 Article
 Rapport
-Test how long does it take
+
 
 Write all one draft, then work on the organisation
