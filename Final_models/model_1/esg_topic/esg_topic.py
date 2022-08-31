@@ -228,8 +228,11 @@ class ESG_Topic:
         topics_hashtags = {}
         for topic, cluster in grouped:
             words = list(self._hashtags(cluster.Tweet.to_list()))
-            hashtags = self._apply_mmr(words)
-            topics_hashtags[topic] = hashtags
+            if len(words)>self.top_n_words:
+                hashtags = self._apply_mmr(words)
+                topics_hashtags[topic] = hashtags
+            else:
+                topics_hashtags[topic] = words
         print("Extracted hashtags successfully")
         return topics_hashtags
         
@@ -361,7 +364,7 @@ class ESG_Topic:
         return topics
 
 
-    def _apply_mmr(self, words:List[str], diversity:float = 0.5)->List[str]:
+    def _apply_mmr(self, words:List[str], diversity:float = 0.2)->List[str]:
         '''
         # Info
         ---
