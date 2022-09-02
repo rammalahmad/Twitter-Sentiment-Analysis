@@ -70,9 +70,7 @@ class Update_DB:
         '''
     
         # Get the Database
-
-        scraper = Scraper(name=self.name, lang=self.lang, size=self.size, model=int(self.f_a))
-        df = scraper.fit()
+        df = self.scrap_df()
 
         #Remove overlapping
         if self.f_a==False:
@@ -103,6 +101,12 @@ class Update_DB:
 
         #Add the newly created dataframe to the old database
         return df, df_1
+    
+    def scrap_df(self):
+        from update_db.scraper import Scraper
+        scraper = Scraper(name=self.name, lang=self.lang, size = self.size, model=int(self.f_a))
+        df = scraper.fit()
+        return df
 
     def remove_inters(self, df:pd.DataFrame)->pd.DataFrame:
         '''

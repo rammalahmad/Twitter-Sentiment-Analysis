@@ -880,6 +880,7 @@ They might give you a head start on where to start improving SMT's results
 ## Scraping:
 Something you should know is that when you scrap twitter, you're not only collecting the tweets' texts but a lot more than that. You're collecting the date, the number of retweets, the number of likes, the user's information (number of followers for instance) and many other information that could be useful. 
 Knowing this, a natural idea that comes to mind is to grant each tweet a certain weight based on the user's popularity and the number of retweets and likes. This should give a more accurate overview on the tweets, instead of considering all tweets as equals.
+Furthermore we may also access the geographic location of the users which would be a nice addition to the database that could be used later for showing the client where the tweets are coming from.
 
 ## Preprocessing:
 In the preprocssing phase we proceedded to eliminate all the links in the tweets. Instead of just eliminating them, we could consider isolating them somewhere in the dataframe then looking into the link's content and measure its sentiment too.
