@@ -36,6 +36,7 @@ class Update_DB:
         name: string, the name of the company
         lang: string, the langugage used for the company
         last_date: string, last date in the stored database
+        size: int, size of the scrapped dataframe
         full_archive: boolean, wether we do a full_archive search or just a weekly search.
         embed_model: int, the embedding model 0=ESG_BERT 1=SBERT 2=xlm-RoBERTa-base
         filter_model: int, the esg_filter model 0=FinBERT 1=Mean_model 2=GS_model

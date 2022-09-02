@@ -57,6 +57,7 @@
     - [New Dimension](#new-dimension)
     - [HDBScan minimal topic size](#hdbscan-minimal-topic-size)
     - [Number of extracted keywords & hashtags](#number-of-extracted-keywords--hashtags)
+    - [MMR diversity](#mmr-diversity)
 - [Further Improvements & Ideas](#further-improvements--ideas)
   - [Scraping:](#scraping-1)
   - [Preprocessing:](#preprocessing)
@@ -840,7 +841,8 @@ class ESG_Topic:
                 use_umap: int = 1, 
                 dim: int = 50, 
                 min_topic_size: int = 20,
-                top_n_words: int = 10):
+                top_n_words: int = 10,
+                mmr_diversity: float = 0.5):
 ```
 ### Clustering Model
 cluster_model lets you choose which model to use to cluster the embeddings
@@ -867,6 +869,9 @@ min_topic_size is the parameter corresponding to the minimal cluster size in the
 
 ### Number of extracted keywords & hashtags
 top_n_words lets you choose how many keywords and hashtags to show in the Front-End. Beware this parameter shouldn't exceed 30 (number of extracted keywords in TFIDF) otherwise problems may appear in the MMR.
+
+### MMR diversity
+mmr_diversity parameter lets you play with the diversity parameter in the MMR algorithm. The more you're close to 1 the more the results are diverse but less relevant to the topic.
 
 # Further Improvements & Ideas
 In this section i'll be discussing some ideas that i didn't have the time to test or implement.\
