@@ -44,13 +44,35 @@
 - [Model 1 vs Model 2](#model-1-vs-model-2)
 - [Launching SMT](#launching-smt)
 - [Changing Parameters](#changing-parameters)
-- [Further improvements to be made](#further-improvements-to-be-made)
+  - [Update_DB](#update_db-2)
+    - [Size of weekly Scraping](#size-of-weekly-scraping)
+    - [Scaping mode](#scaping-mode)
+    - [Embedder model](#embedder-model)
+    - [ESG Filter model](#esg-filter-model)
+    - [Sentiment model](#sentiment-model)
+  - [ESG Topic](#esg-topic)
+    - [Clustering Model](#clustering-model)
+    - [Keywords extraction model](#keywords-extraction-model)
+    - [Skip UMAP](#skip-umap)
+    - [New Dimension](#new-dimension)
+    - [HDBScan minimal topic size](#hdbscan-minimal-topic-size)
+    - [Number of extracted keywords & hashtags](#number-of-extracted-keywords--hashtags)
+- [Further Improvements & Ideas](#further-improvements--ideas)
+  - [Scraping:](#scraping-1)
+  - [Preprocessing:](#preprocessing)
+  - [ESG Filter](#esg-filter)
+  - [Clustering](#clustering-1)
+  - [Keywords extraction](#keywords-extraction)
+- [Useful readings, flask apps, resources](#useful-readings-flask-apps-resources)
+  - [Readings](#readings)
+  - [Flask App](#flask-app)
+  - [Resources](#resources)
 
 --------
 
 Made by: Ahmad Rammal \
 Original date: 31/08/2022 \
-Last update: 01/09/2022
+Last update: 02/09/2022
 
 --------
 # Introduction
@@ -103,7 +125,6 @@ Once that info is provided the script will start by scraping tweets. This could 
 | 100 tweets/ request  | 500 tweets/request | 
 | 5000 tweets/ month  | 2M tweets/month |
 
-{Add pricing reference}
 
 My advice is to use the weekly search if we're examining a medium-large company with good activity rate on twitter. Otherwise a full archive search could bring us most of the tweets about smaller companies.
 
@@ -383,8 +404,8 @@ We then truncate the database on this interval and send it as a DataFrame to out
 
 ### ESG_Topic
 
-The ESG_Topic is an optimized clustering algorithm with certain nuances. It was mainly inspired by the BERTopic script. {Put reference}
-Turn to the ESG_Topic diagram to visualise the process.
+The ESG_Topic is an optimized clustering algorithm with certain nuances. It was mainly inspired by the BERTopic script. You can see the BERTopic plan in the resources section.
+Turn to the ESG_Topic diagram to visualise its process.
 
 #### Input
 
@@ -468,7 +489,7 @@ Clustering models:
 </table>
 
 __Which model to use__
-I chose KMeans as the default clustering algorithm since it needs no additional parameter and it gave fairly good results {Put reference}. However according to a Benchmark i did ToMATo could perform better than KMeans if well implemented (the ToMATo we're working with is an online library without certainty on the potential). As for HDBScan it's very well adapted to UMAP, all the positive points are on his side and in my opinion it could be a safe choice to fix the minimal number of tweets per topic in terms of the client's dataframe size.
+I chose KMeans as the default clustering algorithm since it needs no additional parameter and it gave fairly good results. However according to a Benchmark i did ToMATo could perform better than KMeans if well implemented (the ToMATo we're working with is an online library without certainty on the potential). As for HDBScan it's very well adapted to UMAP, all the positive points are on his side and in my opinion it could be a safe choice to fix the minimal number of tweets per topic in terms of the client's dataframe size.
 
 #### Sentiment in Cluster
 
@@ -485,7 +506,7 @@ To do so we have three options:
 Each of those options help collect the 30 most relevant keywords in the cluster. This number is then reduced to 10 using the MMR algorithm.
 
 __Maximize Marginal Relevance (MMR)__
- MMR considers the similarity of keywords/keyphrases with the document, along with the similarity of already selected keywords and keyphrases. This results in a selection of keywords that maximize their within diversity with respect to the document. {Add reference here}
+ MMR considers the similarity of keywords/keyphrases with the document, along with the similarity of already selected keywords and keyphrases. This results in a selection of keywords that maximize their within diversity with respect to the document. You can check the resources section to have more details on how MMR works.
 - Advantages:
   - Diversifies results based on semantic meaning 
   - Eliminates stopwords
@@ -766,23 +787,145 @@ Now that the database is up to date let's visualise the data between 23 July 202
 As simple as that we obtain the dataframe that should be sent to the Front.
 
 # Changing Parameters
+In this section we'll talk about how to change the SMT's parameters, specifically in the Update_DB and the ESG_Topic scripts
 
-# Further improvements to be made
-- Scraping:
-  - User's info (number of followers)
-  - Number of retweets
-  
-- Preprocessing:
-  - Instead of just eliminating the https we could consider looking into the article and measure its sentiment too
-- GS model:
-  - Improve dictionnaries
-- FinBert:
-  - Look into translation
-  - Unsupervised finetuning
-- Clustering
-  - Redo ToMATo
-  - Test HDBScan
-- KeyBERT:
-  - functionnalities to be explored
-- Hashtags:
-  - Weight = Frequency
+## Update_DB
+```python
+class Update_DB:
+    def __init__(self, name:str, lang:str = "en", 
+                last_date:str = "2007-08-23 10:23:00", 
+                size:int = 200,
+                full_archive:bool = False,
+                embed_model:int = 1,
+                filter_model:int = 2,
+                sent_model:int = 1):
+```
+### Size of weekly Scraping
+This size parameter will be used in the Weekly search. It corresponds to the number of scrapped tweets. We're limited to 500 tweets/request. If the size exceeds 500 the scraper will sleep for some time.\
+ The time of sleeping increase each time that the scraper sleeps:
+- 500 tweets: No sleeping
+- 1000 tweets: 2 minutes sleeping
+- 1500 tweets: 5 minutes sleeping
+- 2000 tweets: 10 minutes sleeping
+
+### Scaping mode
+full_archive parameter lets you choove whether to do full_archive search or weekly search
+- True = Full archive search
+- False = Week search
+
+### Embedder model
+embed_model lets you choose which model to use to calculate the embeddings
+- 0 = ESG_BERT
+- 1 = SBERT
+- 2 = xlm-RoBERTa-base
+
+### ESG Filter model
+filter_model lets you choose which model to use to find the E,S or G class.
+- 0 = FinBERT
+- 1 = Mean Model
+- 2 = Gram-Schmidt Model
+
+### Sentiment model
+sent_model lets you choose which model to use to calculate the sentiment of the tweets
+- 0 = RoBERTa Twitter
+- 1 = BERT base uncased
+
+## ESG Topic
+
+```python
+class ESG_Topic:
+    def __init__(self, 
+                cluster_model: int = 1, 
+                keywords_model: int = 0,
+                use_umap: int = 1, 
+                dim: int = 50, 
+                min_topic_size: int = 20,
+                top_n_words: int = 10):
+```
+### Clustering Model
+cluster_model lets you choose which model to use to cluster the embeddings
+- 0 = HDBScan
+- 1 = KMeans
+- 2 = ToMATo
+
+### Keywords extraction model
+keywords_model lets you choose which model to use to extract keywords from tweets.
+- 0 = TFIDF manual implementation
+- 1 = TFIDF scikit-learn
+- 2 = KeyBERT
+
+### Skip UMAP
+u_map parameter let you choose whether or not to do dimension reduction
+- 0 = skip UMAP
+- 1 = use UMAP
+
+### New Dimension
+dim parameter lets you choose the post-umap dimension of the embeddings
+
+### HDBScan minimal topic size
+min_topic_size is the parameter corresponding to the minimal cluster size in the outcome of the hdbscan. It's an important parameter that could prevent obtaining small irrelevant clusters.
+
+### Number of extracted keywords & hashtags
+top_n_words lets you choose how many keywords and hashtags to show in the Front-End. Beware this parameter shouldn't exceed 30 (number of extracted keywords in TFIDF) otherwise problems may appear in the MMR.
+
+# Further Improvements & Ideas
+In this section i'll be discussing some ideas that i didn't have the time to test or implement.\
+They might give you a head start on where to start improving SMT's results
+
+## Scraping:
+Something you should know is that when you scrap twitter, you're not only collecting the tweets' texts but a lot more than that. You're collecting the date, the number of retweets, the number of likes, the user's information (number of followers for instance) and many other information that could be useful. 
+Knowing this, a natural idea that comes to mind is to grant each tweet a certain weight based on the user's popularity and the number of retweets and likes. This should give a more accurate overview on the tweets, instead of considering all tweets as equals.
+
+## Preprocessing:
+In the preprocssing phase we proceedded to eliminate all the links in the tweets. Instead of just eliminating them, we could consider isolating them somewhere in the dataframe then looking into the link's content and measure its sentiment too.
+
+## ESG Filter
+__FinBert__
+Since the FinBERT model is monolingual we use translation in order to make multilingual so an improvement to be looked into is more powerful translation engines than Google Translate
+
+__GS Model:__
+As for GS model, since it highly depends on the dictionnaries it would be interesting to improve those by making all three classes' dictionnary of the same size, and putting the most interesting words reflecting on each theme.
+
+## Clustering
+__Tweets order__
+In the visualisation a smart move would be to sort the tweets in a cluster from the closest to the cluster center to the farthest. Consequently the tweets that are most relevant to the cluster's topic will be on top.
+
+__HDBScan__
+I'd also like to return to HDBScan as it seems to be quite powerful for the task at hand, maybe even better than KMeans since it eliminates the possibility of having small irrelevant clusters. So i would invite you to put the SMT into further tests with HDBScan. Keep in mind that HDBScan remember to eliminate the cluster -1 from the  
+
+## Keywords extraction
+Since we're willing to increase the wait time on the refresh button while improving the wait time for the visualise i think it would be affordable to use KeyBERT instead of TFIDF in the keywords extraction task.\
+KeyBERT has some very interesting functionnalities that could be explored too in order to make the outcome even more pertinent. So i would strongly encourage you to look into the keyBERT repository
+https://github.com/MaartenGr/KeyBERT
+
+# Useful readings, flask apps, resources
+In this final section i'll list some useful tools that could help you dive further into the project and hopefully help in your own quest.
+
+## Readings
+__Making Monolingual Sentence Embeddings Multilingual using Knowledge Distillation__
+https://arxiv.org/abs/2004.09813
+This could be helpful for the FinBERT translation problem
+\
+__Unsupervised Dense Information Retrieval with Contrastive Learning__
+https://arxiv.org/abs/2112.09118
+A very interesting article that touchs on unsupervised finetuning 
+
+
+## Flask App
+You'll find the flask apps in the "testing" folder
+\
+__ESG_Filter__ 
+This app was developped to test which one of the three esg filtering models is the best.
+\
+__ESG_Topic__
+ I know this could be confusing but this ESG_Topic is different from the  script we discussed above. In fact originally ESG_Topic was kind of "merged" with the Update_DB.
+ It will give you a visualisation on the clusters while making choices on the different parameters we discussed before.
+
+## Resources
+You'll find the resources in the "resources" folder.
+\
+__BerTopic diagram.png__ A simple plan explaining how BERTopic works.
+__keyBERT diagram.png__ A simple plan explaining how keyBERT works.
+__ToMATo algorithm.png__ The raw ToMATo algorithm
+__TFIDF.png__ The TFIDF formula
+__MMR.pdf__ A document explaining an example on the MMR calculations
