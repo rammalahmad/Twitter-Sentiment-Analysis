@@ -21,6 +21,7 @@ import re
 
 class Update_DB:
     def __init__(self, name:str, lang:str = "en", last_date:str = "2007-08-23 10:23:00", 
+                size:int = 200,
                 full_archive:bool = False,
                 embed_model:int = 1,
                 filter_model:int = 2,
@@ -45,6 +46,7 @@ class Update_DB:
         self.name = name
         self.lang = lang
         self.last_date = last_date
+        self.size = size
         self.f_a = full_archive
         self.embed_model = embed_model
         self.filter_model = filter_model
@@ -68,7 +70,7 @@ class Update_DB:
     
         # Get the Database
 
-        scraper = Scraper(name=self.name, lang=self.lang, model=int(self.f_a))
+        scraper = Scraper(name=self.name, lang=self.lang, size=self.size, model=int(self.f_a))
         df = scraper.fit()
 
         #Remove overlapping
