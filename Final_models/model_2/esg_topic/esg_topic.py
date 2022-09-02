@@ -39,7 +39,8 @@ class ESG_Topic:
                 use_umap: int = 1, 
                 dim: int = 50, 
                 min_topic_size: int = 20,
-                top_n_words: int = 10):
+                top_n_words: int = 10,
+                mmr_diversity: float = 0.5):
         '''
         # Info
         ---
@@ -55,6 +56,7 @@ class ESG_Topic:
         dim: int, goal dimension of using umap (should be less than 768)
         min_topic_szie: int, minimal tweets in a topic, relevant if you use cluster_model 0 (HDBScan)
         top_n_words: int, how many keywords and hashtags to show.
+        mmr_diversity: float representing the diversity of results in the mmr process
 
         '''
 
@@ -64,6 +66,7 @@ class ESG_Topic:
         self.dim = dim
         self.min_topic_size = min_topic_size
         self.top_n_words = top_n_words
+        self.mmr_diversity = mmr_diversity
         
         self.topics = None
         self.topic_sizes = None
@@ -364,7 +367,7 @@ class ESG_Topic:
         return topics
 
 
-    def _apply_mmr(self, words:List[str], diversity:float = 0.5)->List[str]:
+    def _apply_mmr(self, words:List[str])->List[str]:
         '''
         # Info
         ---
@@ -373,7 +376,6 @@ class ESG_Topic:
         # Params
         ---
         words: all the mentioned words in the documents
-        diversity: float representing the diversity of results
 
         # Returns
         ---
@@ -385,7 +387,7 @@ class ESG_Topic:
         word_embeddings = self._extract_embeddings(words)
         topic_embedding = self._extract_embeddings(" ".join(words)).reshape(1, -1)
         topic_words = mmr(topic_embedding, word_embeddings, words,
-                            top_n=self.top_n_words, diversity=diversity)
+                            top_n=self.top_n_words, diversity=self.mmr_diversity)
         return topic_words
 
     def add_rest(self, df):
@@ -456,7 +458,7 @@ class ESG_Topic:
         '''
         # Info
         ---
-        It finds the hashtags in the List of tweets
+        It finds the top hashtags in the List of tweets
 
         # Params
         ---
@@ -466,11 +468,21 @@ class ESG_Topic:
         ---
         A set containing all the hashtags that are menitonned
         '''
-        x = set()
+        concat_text = ""
         for text in cluster:
-            y = set(part[1:] for part in text.split() if (part.startswith('#') & (("tesla" in part or "Tesla" in part or "TESLA" in part or "elon" in part) == False)) )
-            x = x.union(y)
-        return x 
+            concat_text += " " + text
+        hashtags_dict = {}
+        for word in concat_text.split():
+            if word.startswith('#'):
+                try:
+                    hashtags_dict[word[1:]] += 1
+                except:
+                    hashtags_dict[word[1:]] = 1
+        sorted_hashtags = [k for k,_ in sorted(hashtags_dict.items(), key=lambda item: item[1], reverse=True)]
+        if len(sorted_hashtags)>30:
+            return sorted_hashtags[:30]
+        else:
+            return sorted_hashtags
 
     @staticmethod
     def _top_n_idx_sparse(matrix, n):
