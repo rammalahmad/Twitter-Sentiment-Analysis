@@ -150,3 +150,10 @@ Presentation
 Article
 Rapport
 Write all one draft, then work on the organisation
+
+
+Relecture Documentation
+Unit testing
+Article
+
+cosine similarity =/= cosine distance
