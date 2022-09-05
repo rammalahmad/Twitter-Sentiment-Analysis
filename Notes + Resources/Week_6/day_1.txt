@@ -146,15 +146,7 @@ Plan:
 Algorithm:
 Add weights to hashtags (regroup all texts from a cluster and see the number of occurences of each hashtag)
 
-Documentation
-Unit testing
 Presentation
 Article
 Rapport
-
 Write all one draft, then work on the organisation
-
-Model 1 vs Model 2
-How to lauch SMT 
-Say where you can play with parameters
-Further improvements to be seen
