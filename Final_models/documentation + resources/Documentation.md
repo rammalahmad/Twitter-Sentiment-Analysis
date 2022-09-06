@@ -805,18 +805,18 @@ This class has the two functions we decribed earlier:
 Let's take the example of tesla
 This will initialise the script that will retrieve the pre-existing database on Tesla:
 ```python
->>> from smt import Surf_Mes_Tweets
->>> smt_tesla = Surf_Mes_Tweets(name = "tesla")
+>>> from refresh import refresh
+>>> from visualise import visualise
 ```
 
 Now let's update the old database:
 ```python
->>> smt_tesla.refresh()
+>>> refresh('telsa')
 ```
 
 Now that the database is up to date let's visualise the data between 23 July 2021 and 28 August 2022.
 ```python
->>> smt_tesla.visualise(sdate='2021/07/23', edate='2022/08/28')
+>>> visualise('tesla', sdate='2021/07/23', edate='2022/08/28')
 ```
 As simple as that we obtain the dataframe that should be sent to the Front.
 

@@ -21,7 +21,7 @@ import re
 
 class Update_DB:
     def __init__(self, name:str, lang:str = "en", last_date:str = "2007-08-23 10:23:00", 
-                size:int = 5000,
+                size:int = 200,
                 full_archive:bool = False,
                 embed_model:int = 1,
                 filter_model:int = 2,
