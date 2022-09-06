@@ -53,6 +53,8 @@ class Surf_Mes_Tweets:
         df = df.rename(columns={"Topic": "Cluster"})
         df = df.drop(columns=['Embedding', 'Prep_Tweet'])
         
+        # remove duplicates
+        df = df.drop_duplicates(subset=['Tweet'], keep="first")
         # Save the topicer work
         db_name = self.name
         self.db_master.save_df(df=df, db_name=db_name+"_"+str(sdate).replace(":", ".")+"_"+str(edate).replace(":", "."))

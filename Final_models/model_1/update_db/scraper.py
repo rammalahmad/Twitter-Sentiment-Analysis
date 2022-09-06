@@ -60,10 +60,12 @@ class Scraper:
         tweets = tw.Cursor(api.search ,q=self.name, lang=self.lang, tweet_mode="extended").items(self.size)
         tweet =[]
         date = []
+        retweets = []
         for i in tweets :
             date.append(i.created_at)
             tweet.append(i.full_text)
-        df = pd.DataFrame({'Tweet': tweet, 'Date': date})
+            retweets.append(i.retweet_count)
+        df = pd.DataFrame({'Tweet': tweet, 'Date': date, 'Retweets': retweets})
         df['Language'] = self.lang
         return df
 

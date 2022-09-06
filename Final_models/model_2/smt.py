@@ -66,7 +66,8 @@ class Surf_Mes_Tweets:
 
         # Remove irrelevant columns
         df = df.drop(columns=['Embedding', 'Keywords', 'Hashtags'])
-
+        # Remove duplicate tweets
+        df = df.drop_duplicates(subset=['Tweet'], keep="first")
         # Save the topicer work
         db_name = self.name
         self.db_master.save_df(df=df, db_name=db_name+"_"+str(sdate).replace(":", ".")+"_"+str(edate).replace(":", "."))
