@@ -157,6 +157,11 @@ Once that info is provided the script will start by scraping tweets. This could 
 
 
 My advice is to use the weekly search if we're examining a medium-large company with good activity rate on twitter. Otherwise a full archive search could bring us most of the tweets about smaller companies.
+In the scraping we get the following information:
+- Tweet
+- Date
+- Nb Retweets
+- Language
 
 #### Preprocess
 In order to get rid of undesirable nuisance in our tweets we get rid of urls, the # sign, the mentions, and the 'RT' string that corresponds to "Retweet".

@@ -12,7 +12,7 @@ def visualise(name, sdate:str = "2006-08-23 10:23:00", edate:str = "2023-08-23 1
     df = visu_elements(df)
 
     # Remove irrelevant columns
-    df = df.drop(columns=['Embedding', 'Keywords', 'Hashtags'])
+    df = df.drop(columns=['Prep_Tweet', 'Embedding', 'Keywords', 'Hashtags'])
     # Remove duplicate tweets
     df = df.drop_duplicates(subset=['Tweet'], keep="first")
     # Save the topicer work
