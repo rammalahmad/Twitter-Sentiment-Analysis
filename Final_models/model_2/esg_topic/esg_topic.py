@@ -92,8 +92,6 @@ class ESG_Topic:
         ---
         Adds the hashtags, keywords, sentiment as attributes + assigns each tweet to a topic in the dataframe
         '''
-        #Preprocessed text:
-        df["Prep_Tweet"] = self._preprocess_text(df.Tweet.to_list())
 
         #Reduce Dimension
 

@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="laGwyEOiLua1Rv3XhEc0" name="Page-1">
-        <mxGraphModel dx="798" dy="663" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="498" dy="663" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -49,7 +49,7 @@
                     <mxGeometry x="284" y="532" width="60" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="26" value="DataFrame ESG" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="254" y="582" width="140" height="210" as="geometry"/>
+                    <mxGeometry x="254" y="582" width="140" height="240" as="geometry"/>
                 </mxCell>
                 <mxCell id="27" value="Tweet" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
                     <mxGeometry y="30" width="140" height="30" as="geometry"/>
@@ -60,14 +60,17 @@
                 <mxCell id="29" value="Language" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
                     <mxGeometry y="90" width="140" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="30" value="Embedding" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
+                <mxCell id="102" value="Prep_Tweet" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
                     <mxGeometry y="120" width="140" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="31" value="ESG_Class" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
+                <mxCell id="30" value="Embedding" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
                     <mxGeometry y="150" width="140" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="32" value="Sentiment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
+                <mxCell id="31" value="ESG_Class" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
                     <mxGeometry y="180" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="Sentiment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="26" vertex="1">
+                    <mxGeometry y="210" width="140" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="35" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;startArrow=none;" parent="1" source="37" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -80,14 +83,14 @@
                 </mxCell>
                 <mxCell id="55" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;" parent="1" target="37" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="316" y="795" as="sourcePoint"/>
+                        <mxPoint x="316" y="820" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="37" value="Save to&amp;nbsp;&lt;br&gt;Database ESG" style="html=1;dashed=0;whitespace=wrap;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="266" y="881" width="100" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="41" value="DataFrame Not ESG" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry x="43" y="585" width="170" height="150" as="geometry"/>
+                    <mxGeometry x="43" y="585" width="170" height="180" as="geometry"/>
                 </mxCell>
                 <mxCell id="42" value="Tweet" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
                     <mxGeometry y="30" width="170" height="30" as="geometry"/>
@@ -95,11 +98,14 @@
                 <mxCell id="43" value="Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
                     <mxGeometry y="60" width="170" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="44" value="Language" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
+                <mxCell id="101" value="Language" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
                     <mxGeometry y="90" width="170" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="45" value="Embedding" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
+                <mxCell id="44" value="Prep_Tweet" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
                     <mxGeometry y="120" width="170" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" value="Embedding" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;fontSize=14;" parent="41" vertex="1">
+                    <mxGeometry y="150" width="170" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="46" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="93" y="540" width="60" height="40" as="geometry"/>
