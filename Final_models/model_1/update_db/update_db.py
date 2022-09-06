@@ -95,9 +95,6 @@ class Update_DB:
 
         #Sentiment score
         df = self.find_sentiment(df)
-    
-        df = df.drop(columns=['Prep_Tweet'])
-        df_1 = df_1.drop(columns=['Prep_Tweet'])
 
         #Add the newly created dataframe to the old database
         return df, df_1

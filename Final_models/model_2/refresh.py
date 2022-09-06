@@ -28,7 +28,7 @@ def refresh(name):
     df_not_esg['log'] = 'C'
     df_esg['log'] = 'C'
     if db_master.found_db:
-        old_db = db_master.db[['Tweet', 'Date', 'Language', 'Embedding', 'ESG_class', 'Sentiment']]
+        old_db = db_master.db[['Tweet', 'Date', 'Language', 'Prep_Tweet', 'Embedding', 'ESG_class', 'Sentiment']]
         old_db['Embedding'] = old_db['Embedding'].apply(lambda x: ast.literal_eval(x))
         old_db['log'] = 'U'
 

@@ -21,7 +21,6 @@
     - [Input](#input-1)
     - [ESG_Topic](#esg_topic)
       - [Input](#input-2)
-      - [PreProcess Tweets](#preprocess-tweets)
       - [Dimension Reduction](#dimension-reduction)
       - [Clustering](#clustering)
       - [Sentiment in Cluster](#sentiment-in-cluster)
@@ -399,6 +398,11 @@ Even though there isn't a very firm argument to choose one model over the other,
       <td>X</td>
     </tr>
     <tr>
+      <td>Prep_Tweet</td>
+      <td>X</td>
+      <td>X</td>
+    </tr>
+    <tr>
       <td>Embedding</td>
       <td>X</td>
       <td>X</td>
@@ -442,11 +446,6 @@ Turn to the ESG_Topic diagram to visualise its process.
 #### Input
 
 It takes as input the DataFrame that is sliced from the client's DataBase according to his needs.
-
-#### PreProcess Tweets
-
-We repeat the same preprocessing we did in the Update_DB script. In fact we dropped the preprocessing we did earlier somewhere along the way because we don't want two columns of text in the DataBase, consequently we repeat the preprocess task again in this part.\
-In a future version of the code you may eliminate this overlapping but beware the cost it may inflict on the backend where the database is stored.
 
 #### Dimension Reduction
 
@@ -661,6 +660,11 @@ __Output:__
       <td>X</td>
     </tr>
     <tr>
+      <td>Prep_Tweet</td>
+      <td>X</td>
+      <td>X</td>
+    </tr>
+    <tr>
       <td>Embedding</td>
       <td>X</td>
       <td>X</td>
@@ -707,6 +711,7 @@ Now that we've collected all this information we can output a DataFrame with the
       <td>Tweet</td>
       <td>Date</td>
       <td>Language</td>
+      <td>Prep_Tweet</td>
       <td>Embedding</td>
       <td>ESG Class</td>
       <td>Sentiment</td>
