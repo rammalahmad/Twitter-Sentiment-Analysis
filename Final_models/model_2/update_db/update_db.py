@@ -202,6 +202,6 @@ class Update_DB:
         cleaned_documents = [re.sub(r"http\S+", "", doc) for doc in cleaned_documents]
         cleaned_documents = [re.sub(r"https\S+", "", doc) for doc in cleaned_documents]
         cleaned_documents = [re.sub(r"@\S+", "", doc) for doc in cleaned_documents]
-        cleaned_documents = [doc.replace("RT", "") for doc in cleaned_documents]
+        cleaned_documents = [re.sub("RT", "", doc) for doc in cleaned_documents]
 
         return cleaned_documents

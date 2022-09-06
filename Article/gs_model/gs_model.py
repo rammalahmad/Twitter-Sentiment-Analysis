@@ -11,6 +11,8 @@ class GS_Model:
         self.topic_name = topic_name
         self.data = self.df['text'].to_list()
 
+    def train(self, train_df:pd.DataFrame)
+
     def fit(self):
         # Get the texts embeddings
         try:
