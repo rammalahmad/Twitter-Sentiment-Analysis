@@ -37,6 +37,6 @@ def visu_elements(df:pd.DataFrame):
 
 if __name__ == '__main__':
     try:
-        visualise(str(sys.argv[1]))
+        visualise(str(sys.argv[1]), str(sys.argv[2]), str(sys.argv[3]))
     except:
-        print('Execution interrupted')
+        visualise(str(sys.argv[1]))
