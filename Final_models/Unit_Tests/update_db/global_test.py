@@ -3,7 +3,7 @@ import pandas as pd
 import ast
 import numpy as np
 
-class Test_Update_DB(unittest.TestCase):
+class Test_Update_DB_1(unittest.TestCase):
     def setUp(self):
         from update_db.update_db import Update_DB
         self.company = "tesla"
@@ -16,6 +16,7 @@ class Test_Update_DB(unittest.TestCase):
     def test_preprocessing(self):
         df = pd.read_csv("tesla_test.csv")
         df["Prep_Tweet"] = self.updater._preprocess_text(df.Tweet.to_list())
+        self.assertIsInstance(df, pd.DataFrame)
 
     def test_embedder(self):
         df = pd.read_csv("tesla_test.csv")
@@ -29,6 +30,7 @@ class Test_Update_DB(unittest.TestCase):
     def test_sentiment(self):
         df = pd.read_csv("tesla_test.csv")
         df = self.updater.find_sentiment(df)
+
 
 if __name__ == '__main__':
     unittest.main()
