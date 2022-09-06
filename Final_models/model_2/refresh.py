@@ -41,7 +41,6 @@ def refresh(name):
     new_db = topicer.fit_transform(new_db)
 
     new_db = new_db.rename(columns={"Topic": "Cluster"})
-    new_db = new_db.drop(columns=['Prep_Tweet'])
 
     db_name = name
 
