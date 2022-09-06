@@ -803,20 +803,15 @@ This class has the two functions we decribed earlier:
 - Visualise
 
 Let's take the example of tesla
-This will initialise the script that will retrieve the pre-existing database on Tesla:
-```python
->>> from refresh import refresh
->>> from visualise import visualise
-```
 
-Now let's update the old database:
-```python
->>> refresh('telsa')
+We'll update/create the database:
+```console
+> refresh.py tesla
 ```
 
 Now that the database is up to date let's visualise the data between 23 July 2021 and 28 August 2022.
-```python
->>> visualise('tesla', sdate='2021/07/23', edate='2022/08/28')
+```console
+> visualise.py tesla 2021/07/23 2022/08/28
 ```
 As simple as that we obtain the dataframe that should be sent to the Front.
 
