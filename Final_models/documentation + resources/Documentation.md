@@ -1,5 +1,11 @@
+
 - [Introduction](#introduction)
 - [Project Overview](#project-overview)
+- [Diagrams](#diagrams)
+  - [SMT Model 1 Diagram](#smt-model-1-diagram)
+  - [SMT Model 2 Diagram](#smt-model-2-diagram)
+  - [Update_DB Diagram](#update_db-diagram)
+  - [ESG_Topic Diagram](#esg_topic-diagram)
 - [Model 1: The DataScientist Model](#model-1-the-datascientist-model)
   - [Refresh](#refresh)
     - [Update_DB](#update_db)
@@ -98,8 +104,32 @@ When a new client subscribes for our product, we start by creating a twitter dat
 When he logs in he can manually refresh this database, thus collecting new data online and making the results up-to-date. That's something he'll have to do each certain period of time (depending on the company's size and its activity online) in order to have real-time results.\
 Once a database is in our hands, the client can "visualise" his tweets in a nice structured way along with the sentiment score associated with those tweets.\
 Now that's really as simple as i could put it for the project description. Brace yourself for now we're going to take a look at the scripts that are the foundation blocks of Twitter Surfing.\
-I would advise you to use the diagrams that were concieved for the exact purpose of overviewing SMT. You'll find them in the "diagrams" folder.\
- All set? Let's go!
+
+# Diagrams
+
+This section contains the four diagrams that are essential to understand the long process of SMT.
+In fact the structure of the two next sections is based on those diagrams so it would be very useful to put them next to you while reading this documentation. You can also find the drawio original files in the "diagrams" folder if you wish to modify them.
+
+In short we have 2 SMT models. Each of those models uses 2 main scripts: __Update_DB__ and __ESG_Topic__. 
+
+So in total we have four diagrams:
+- SMT Model 1
+- SMT Model 2
+- Update_DB
+- ESG_Topic
+
+## SMT Model 1 Diagram
+![Image](Model_1.png)
+
+## SMT Model 2 Diagram
+![Image](Model_2.png)
+
+## Update_DB Diagram
+![Image](Update_DB.png)
+
+## ESG_Topic Diagram
+![Image](ESG_Topic.png)
+
 
 # Model 1: The DataScientist Model
 The first thing you should know is that the code was originally concieved for this model. Where does it get its name from? Well this model is more rigourous and mahematically approriate for an enlighted DataScientist than for a client.
@@ -256,7 +286,7 @@ __Mean Model__
 A smart and quite simple idea.\
 Suppose we have a dictionnary for the Environmental, Social and Gouvernance themes (which we already have btw). We start by calculating the average embedding of each of those dictionnaries thus we obtain three vectors each representing a certain class among E, S or G.
 For a certain tweet embedding we measure the cosine similarity with each of those three vectors. The closest vector should be be the closest class to the tweet. 
-Yet the tweet could be very far (in cosine distance) from the three vectors thus we should set a threshhold below which the vector doesn't belong to any class.
+Yet the tweet could be very far (in cosine similarity) from the three vectors thus we should set a threshhold below which the vector doesn't belong to any class.
 
 In short suppose t is embedding for a certain tweet, and e,s,g are the embeddings for the E, S, G dictionnaries. 
 ```python
@@ -276,8 +306,8 @@ else:
   esg_class(t) = -1 # -1 being the "not" class
 ``` 
 __Which model to use__
-Even though we don't really have any firm argument to choose one model over the other i think it would be safer in the mean time to use FinBERT. We could avoid the non-multiling issue by translating the texts using Google Translate library for example. This would increase the time cost however. 
-A tool that could help you better decide would be the Flask app esg_filter (look into other tools sections)
+Even though we don't really have any firm argument to choose one model over the other i think it would be safer in the mean time to use FinBERT. In fact with some basic testing we found that FinBERT could be the most reliable model in the mean time. We could avoid the non-multiling issue by translating the texts using Google Translate library for example. This would increase the time cost however. 
+A tool that could help you better decide would be the Flask app esg_filter (look into "Useful readings, flask apps, resources" section)
 
 #### Sentiment Analysis
 
@@ -405,7 +435,8 @@ We then truncate the database on this interval and send it as a DataFrame to out
 
 ### ESG_Topic
 
-The ESG_Topic is an optimized clustering algorithm with certain nuances. It was mainly inspired by the BERTopic script. You can see the BERTopic plan in the resources section.
+The ESG_Topic is an optimized clustering algorithm with certain nuances. It was mainly inspired by the BERTopic model you'll find in https://github.com/MaartenGr/BERTopic.
+ You can see the BERTopic plan in "Useful readings, flask apps, resources" section.
 Turn to the ESG_Topic diagram to visualise its process.
 
 #### Input
@@ -423,11 +454,11 @@ Dimension reduction is the task of projecting the embeddings to vectorial of les
 The name could be decieving since it's not just about reducing the dimension but we also change the topological metric of the space from the cosine metric to the euclidean metric which is essential for the clustering task later
 The tool we use for this is UMAP. The default new dimension is 50.\
 - __Advantages:__
-  - Keeps good quality of embeddings
-  - Optimise clustering task
+  - UMAP keeps good quality of embeddings
+  - Dimension Reduction optimises clustering task
 - __Disadvantages:__
   - Preloading time of UMAP
-  - New dimension parameter choice
+  - Inconvenience of new dimension parameter choice
 
 __Should you use it or not__
 I would say for large datasets it would be essential to do dimension reduction otherwise the clustering task may take a considerably long time.\
@@ -482,7 +513,7 @@ Clustering models:
       </td>
       <td>
         <ul>
-          <li>Tendency to create very large clusters</li> 
+          <li>Tendency to create very large and disproportionate clusters</li> 
           <li>Worse results than other models on the tesla dataset</li>
         </ul>
       </td>
@@ -504,10 +535,13 @@ To do so we have three options:
 - TFIDF Scikit-Learn
 - KeyBERT
 
+__TFIDF__ is a statistical method that you can find in the "Useful readings, flask apps, resources" section. It helps finding the most relevant keywords in a text using a statistical formula.
+__KeyBERT__ is a Deep Learning method that gets the most relevant keywords for a text using semantical similarities. https://github.com/MaartenGr/KeyBERT
+
 Each of those options help collect the 30 most relevant keywords in the cluster. This number is then reduced to 10 using the MMR algorithm.
 
 __Maximize Marginal Relevance (MMR)__
- MMR considers the similarity of keywords/keyphrases with the document, along with the similarity of already selected keywords and keyphrases. This results in a selection of keywords that maximize their within diversity with respect to the document. You can check the resources section to have more details on how MMR works.
+ MMR considers the similarity of keywords/keyphrases with the document, along with the similarity of already selected keywords and keyphrases. This results in a selection of keywords that maximize their within diversity with respect to the document. You can check the  "Useful readings, flask apps, resources" section to have more details on how MMR works.
 - Advantages:
   - Diversifies results based on semantic meaning 
   - Eliminates stopwords
@@ -567,7 +601,7 @@ __Which model to use__
 If we can afford the waiting time (which could be the case in the model 2 actually), KeyBERT should be the best option. If we can't however then the TFIDF manual implementation is the best candidate for the task.
 
 #### Hashtags in Cluster
-Inspired by the earlier work for the keywords a similar approach could be done for the hashtags. We start by taking the __set__ of all the hashtags in the Cluster. We recover the top 30 recurrent hashtags (not done yet) then we apply MMR on the set in order to get diversified results.
+Inspired by the earlier work for the keywords a similar approach could be done for the hashtags. We start by taking the __set__ of all the hashtags in the Cluster. We recover the top 30 recurrent hashtags, then we apply MMR on the set in order to get diversified results.
 For instance, it's quite common to get a lot of hashtags that indicate the company's name which would not be really helpful in finding the cluster's theme hence the need to apply mmr.
 
 #### Output
@@ -652,8 +686,7 @@ Unlike model 1 however, instead of bringing the DataFrame ESG to the pre-existin
 We recover the old database ESG and merge it with the DataFrame ESG. That's basically our new DataFrame ESG that we'll work with in the next task.
 
 ### ESG_Topic
-What? But that belongs in the visualise functionnality.
- Well my dear summer child, you don't really have a say in this... the client is always right :)
+If you're confused i would invit to look again into the Model_2 diagram along with the ESG_Topic diagram. 
  The process in this script is almost the same as the one in the model 1 except for two additional steps before outputting the results
 #### Input:
 The newly formed DataFrame (the combination of the newly scrapped data along with the old one)
@@ -878,7 +911,7 @@ In this section i'll be discussing some ideas that i didn't have the time to tes
 They might give you a head start on where to start improving SMT's results
 
 ## Scraping:
-Something you should know is that when you scrap twitter, you're not only collecting the tweets' texts but a lot more than that. You're collecting the date, the number of retweets, the number of likes, the user's information (number of followers for instance) and many other information that could be useful. 
+Something you should know is that when you scrape twitter, you're not only collecting the tweets' texts but a lot more than that. You're collecting the date, the number of retweets, the number of likes, the user's information (number of followers for instance) and many other information that could be useful. 
 Knowing this, a natural idea that comes to mind is to grant each tweet a certain weight based on the user's popularity and the number of retweets and likes. This should give a more accurate overview on the tweets, instead of considering all tweets as equals.
 Furthermore we may also access the geographic location of the users which would be a nice addition to the database that could be used later for showing the client where the tweets are coming from.
 
@@ -897,7 +930,7 @@ __Tweets order__
 In the visualisation a smart move would be to sort the tweets in a cluster from the closest to the cluster center to the farthest. Consequently the tweets that are most relevant to the cluster's topic will be on top.
 
 __HDBScan__
-I'd also like to return to HDBScan as it seems to be quite powerful for the task at hand, maybe even better than KMeans since it eliminates the possibility of having small irrelevant clusters. So i would invite you to put the SMT into further tests with HDBScan. Keep in mind that HDBScan remember to eliminate the cluster -1 from the  
+I'd also like to return to HDBScan as it seems to be quite powerful for the task at hand, maybe even better than KMeans since it eliminates the possibility of having small irrelevant clusters. So i would invite you to put the SMT into further tests with HDBScan. Keep in mind that HDBScan will create a cluster -1 containing all the tweets that did not fit anywhere so remember to eliminate this cluster from your final front-end database.
 
 ## Keywords extraction
 Since we're willing to increase the wait time on the refresh button while improving the wait time for the visualise i think it would be affordable to use KeyBERT instead of TFIDF in the keywords extraction task.\
@@ -911,7 +944,7 @@ In this final section i'll list some useful tools that could help you dive furth
 __Making Monolingual Sentence Embeddings Multilingual using Knowledge Distillation__
 https://arxiv.org/abs/2004.09813
 This could be helpful for the FinBERT translation problem
-\
+
 __Unsupervised Dense Information Retrieval with Contrastive Learning__
 https://arxiv.org/abs/2112.09118
 A very interesting article that touchs on unsupervised finetuning 
@@ -919,17 +952,16 @@ A very interesting article that touchs on unsupervised finetuning
 
 ## Flask App
 You'll find the flask apps in the "testing" folder
-\
+
 __ESG_Filter__ 
 This app was developped to test which one of the three esg filtering models is the best.
-\
+
 __ESG_Topic__
  I know this could be confusing but this ESG_Topic is different from the  script we discussed above. In fact originally ESG_Topic was kind of "merged" with the Update_DB.
  It will give you a visualisation on the clusters while making choices on the different parameters we discussed before.
 
 ## Resources
 You'll find the resources in the "resources" folder.
-\
 __BerTopic diagram.png__ A simple plan explaining how BERTopic works.
 __keyBERT diagram.png__ A simple plan explaining how keyBERT works.
 __ToMATo algorithm.png__ The raw ToMATo algorithm

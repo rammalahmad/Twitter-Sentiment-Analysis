@@ -391,6 +391,14 @@ class ESG_Topic:
         return topic_words
 
     def add_rest(self, df):
+        '''
+        # Info
+        ---
+        This function will add two columns to the dataframe:
+        *Keywrods: the keywords of a cluster that appear in the tweet
+        *Hashtags: the hashtags of a cluster that appear in the tweet
+        '''
+
         #df['avg_sentiment'] = df['Topic'].apply(lambda x : self.topics_sentiment[x])
         df['Keywords'] = df.apply(lambda row : self.keywords_text(self.topics_keywords[row['Topic']], row['Tweet']), axis=1)
         df['Hashtags'] = df.apply(lambda row : self.keywords_text(self.topics_hashtags[row['Topic']], row['Tweet']), axis=1)
@@ -525,6 +533,20 @@ class ESG_Topic:
 
     @staticmethod
     def keywords_text(words_list:List[str], text:str):
+        '''
+        # Info
+        ---
+        This function finds the words that are present in a words_list and appear in a text
+
+        # Params
+        ---
+        words_list: a list of the words we'll be looking for
+        text: the text we're examining
+
+        # Returns
+        ---
+        A list containing the intersection between the text and the words list
+        '''
         result = []
         for e in words_list:
             if e in text:

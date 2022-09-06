@@ -40,7 +40,7 @@ class ESG_Topic:
                 dim: int = 50, 
                 min_topic_size: int = 20,
                 top_n_words: int = 10,
-                mmr_diversity: float = 0.5):
+                mmr_diversity: float = 0.8):
         '''
         # Info
         ---
@@ -163,6 +163,7 @@ class ESG_Topic:
             hdbscan_model.fit(embeddings)
             df['Topic'] = hdbscan_model.labels_
             self._update_topic_size(df)
+            # df = df[df['Topic'] != -1]
 
         elif self.cluster_model == 1:
             print("Clustering with KMeans")
@@ -391,6 +392,14 @@ class ESG_Topic:
         return topic_words
 
     def add_rest(self, df):
+        '''
+        # Info
+        ---
+        This function will add three columns to the dataframe:
+        *Cluster's Sentiment
+        *cluster's Keywords
+        *Cluster's Hashtags
+        '''
         df['Cluster_Sentiment'] = df.apply(lambda row : self.topics_sentiment[row['Topic']], axis=1)
         df['Cluster_Keywords'] = df.apply(lambda row : self.topics_keywords[row['Topic']], axis=1)
         df['Cluster_Hashtags'] = df.apply(lambda row : self.topics_hashtags[row['Topic']], axis=1)
