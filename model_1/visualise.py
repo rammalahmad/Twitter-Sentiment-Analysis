@@ -1,6 +1,6 @@
-from db_master import DB_Master
+from model_1.db_master import DB_Master
 import pandas as pd
-from esg_topic.esg_topic import ESG_Topic
+from model_1.esg_topic.esg_topic import ESG_Topic
 import sys
 
 def visualise(name, sdate:str = "2006-08-23 10:23:00", edate:str = "2023-08-23 10:23:00"):

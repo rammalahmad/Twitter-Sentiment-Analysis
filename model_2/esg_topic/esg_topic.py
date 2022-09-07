@@ -24,8 +24,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from yellowbrick.cluster import KElbowVisualizer
 from sklearn.cluster import KMeans
-from esg_topic.tfidf_idfi import TFIDF_IDFi
-from embedder.embedder import Embedder
+from model_2.esg_topic.tfidf_idfi import TFIDF_IDFi
+from model_2.embedder.embedder import Embedder
 from tomaster import tomato
 from yellowbrick.cluster.elbow import KElbowVisualizer
 
@@ -381,7 +381,7 @@ class ESG_Topic:
         '''
         if len(words) == 0:
             return []
-        from esg_topic.mmr import mmr
+        from model_2.esg_topic.mmr import mmr
         word_embeddings = self._extract_embeddings(words)
         topic_embedding = self._extract_embeddings(" ".join(words)).reshape(1, -1)
         topic_words = mmr(topic_embedding, word_embeddings, words,

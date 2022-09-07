@@ -1,7 +1,7 @@
 #!/usr/bin/python
-from db_master import DB_Master
+from model_1.db_master import DB_Master
 import pandas as pd
-from update_db.update_db import Update_DB
+from model_1.update_db.update_db import Update_DB
 
 import sys
 

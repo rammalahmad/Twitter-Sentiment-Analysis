@@ -47,19 +47,19 @@ class ESG_Filter:
         It returns a List containing the class for each embedding or each tweet
         '''
         if self.model == 0:
-            from update_db.esg_filter.finbert_model import Finbert_model
+            from model_1.update_db.esg_filter.finbert_model import Finbert_model
             print("Using FinBERT")
             model = Finbert_model(self.lang)
             return model.fit(documents)
 
         elif self.model == 1:
-            from update_db.esg_filter.mean_model import Mean_model
+            from model_1.update_db.esg_filter.mean_model import Mean_model
             print("Using Mean Model")
             model = Mean_model(threshold = 0.15)
             return model.fit(embeddings)
 
         elif self.model == 2:
-            from update_db.esg_filter.gs_model import GS_model
+            from model_1.update_db.esg_filter.gs_model import GS_model
             print("Using GS Model")
             model = GS_model(threshold = 0.5)
             return model.fit(embeddings)
