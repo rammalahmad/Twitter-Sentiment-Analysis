@@ -1,4 +1,4 @@
-from db_master import DB_Master
+from model_2.db_master import DB_Master
 import pandas as pd
 import ast
 import sys

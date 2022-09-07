@@ -32,14 +32,14 @@ class Embedder:
         '''
         self.index=index
         if index == 0:
-            from embedder.ESG_BERT import model, tokenizer
+            from model_2.embedder.ESG_BERT import model, tokenizer
             self.model = model
             self.tokenizer = tokenizer
         elif index == 1:
-            from embedder.sbert import model
+            from model_2.embedder.sbert import model
             self.model = model
         elif index == 2:
-            from embedder.xlm_roberta import model, tokenizer
+            from model_2.embedder.xlm_roberta import model, tokenizer
             self.model = model
             self.tokenizer = tokenizer
         

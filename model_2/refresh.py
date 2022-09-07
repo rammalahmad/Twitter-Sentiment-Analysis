@@ -1,6 +1,6 @@
-from update_db.update_db import Update_DB
-from esg_topic.esg_topic import ESG_Topic
-from db_master import DB_Master
+from model_2.update_db.update_db import Update_DB
+from model_2.esg_topic.esg_topic import ESG_Topic
+from model_2.db_master import DB_Master
 import pandas as pd
 import ast
 import sys

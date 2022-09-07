@@ -13,7 +13,7 @@ The script will do the following steps:
 '''
 
 from typing import List
-from update_db.scraper import Scraper
+from model_1.update_db.scraper import Scraper
 import pandas as pd
 import numpy as np
 import re
@@ -100,7 +100,7 @@ class Update_DB:
         return df, df_1
     
     def scrap_df(self):
-        from update_db.scraper import Scraper
+        from model_1.update_db.scraper import Scraper
         scraper = Scraper(name=self.name, lang=self.lang, size = self.size, model=int(self.f_a))
         df = scraper.fit()
         return df
@@ -140,12 +140,10 @@ class Update_DB:
         ---
         df with a column containing the esg_class
         '''
-        from update_db.esg_filter.esg_filter import ESG_Filter
+        from model_1.update_db.esg_filter.esg_filter import ESG_Filter
         filter = ESG_Filter(model=self.filter_model, lang=self.lang)
         df['ESG_class'] = filter.fit(documents=df.Prep_Tweet.to_list(), embeddings=embeddings)
-        # from esg_filter.finbert_model import Finbert_model
-        # filter = Finbert_model(self.lang)
-        # df['ESG_class'] = filter.fit(df.Prep_Tweet.to_list())
+
         return df
 
     def extract_embeddings(self, df:pd.DataFrame)->pd.DataFrame:
@@ -162,7 +160,7 @@ class Update_DB:
         ---
         df with a column containing the embedding array
         '''
-        from embedder.embedder import Embedder
+        from model_1.embedder.embedder import Embedder
         print("Extracting Embeddings")
         embedder = Embedder(self.embed_model)
         return embedder.embed(documents=df.Prep_Tweet.to_list(), b_size=32)
@@ -181,7 +179,7 @@ class Update_DB:
         ---
         df with a column containing the sentiment score
         '''
-        from update_db.sentiment_analysis import Sent_model
+        from model_1.update_db.sentiment_analysis import Sent_model
         print("Analysing sentiment")
         sent = Sent_model(self.sent_model)
         df['Sentiment'] = sent.doc_score(df.Prep_Tweet.to_list())

@@ -1,4 +1,4 @@
-import update_db.scraping_constants as c
+import model_1.update_db.scraping_constants as c
 import tweepy as tw
 import pandas as pd
 import requests
