@@ -44,7 +44,7 @@ class ESG_Topic:
         '''
         # Info
         ---
-        This is the topicer, it's goal is to put the embeddings of the database in consistent clusters
+        This is the topicer, its goal is to put the embeddings of the database in consistent clusters
         each cluster representing a topic. From each topic we extract the average sentiment and the most
         relevant keywords and hashtags.
 
