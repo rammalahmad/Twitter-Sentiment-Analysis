@@ -1,6 +1,6 @@
 model_1/data
 model_2/data
-Data
+#Data
 
 
 flask/esg_topic/flask_session/*
