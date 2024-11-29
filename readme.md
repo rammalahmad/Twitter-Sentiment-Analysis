@@ -1,14 +1,35 @@
+# Project Overview
 
-- [Introduction](#introduction)
+The goal of this project is to help companies understand their ESG (Environmental, Social, and Governance) reputation on Twitter. Here's how it works:
+
+1. **Data Collection**:  
+   We scrape tweets related to a company's ESG topics. These tweets are gathered based on relevant keywords and hashtags associated with the company.
+
+2. **Sentiment Analysis**:  
+   Each tweet is analyzed for sentiment. Using these sentiment scores, we calculate an average sentiment score to determine the company's ESG score on Twitter.
+
+3. **Client-Specific Database**:  
+   - When a new client subscribes to our service, we create a dedicated Twitter database for them.  
+   - This database contains all the tweets we scraped during the subscription period, along with post-processed data for deeper insights (explained later).  
+   - The client can manually refresh their database, fetching new data to keep results up-to-date.  
+   - The frequency of refreshing depends on the company’s size and its online activity, ensuring real-time insights.
+
+4. **Data Visualization**:  
+   Clients can view their tweets in a structured and visually appealing format, along with sentiment scores for each tweet.
+
+In summary, the project provides a simple yet effective way for companies to monitor and analyze their ESG reputation on Twitter.
+
+---
+
 - [Project Overview](#project-overview)
 - [Diagrams](#diagrams)
   - [SMT Model 1 Diagram](#smt-model-1-diagram)
   - [SMT Model 2 Diagram](#smt-model-2-diagram)
-  - [Update_DB Diagram](#update_db-diagram)
-  - [ESG_Topic Diagram](#esg_topic-diagram)
+  - [Update\_DB Diagram](#update_db-diagram)
+  - [ESG\_Topic Diagram](#esg_topic-diagram)
 - [Model 1: The DataScientist Model](#model-1-the-datascientist-model)
   - [Refresh](#refresh)
-    - [Update_DB](#update_db)
+    - [Update\_DB](#update_db)
       - [Input](#input)
       - [Scraping](#scraping)
       - [Preprocess](#preprocess)
@@ -19,7 +40,7 @@
     - [Save the data](#save-the-data)
   - [Visualise](#visualise)
     - [Input](#input-1)
-    - [ESG_Topic](#esg_topic)
+    - [ESG\_Topic](#esg_topic)
       - [Input](#input-2)
       - [Dimension Reduction](#dimension-reduction)
       - [Clustering](#clustering)
@@ -30,10 +51,10 @@
     - [Send to Front](#send-to-front)
 - [Model 2: The client's model](#model-2-the-clients-model)
   - [Refresh](#refresh-1)
-    - [Update_DB](#update_db-1)
+    - [Update\_DB](#update_db-1)
     - [Save DataFrame Not ESG](#save-dataframe-not-esg)
     - [Combine DF ESG to DB ESG](#combine-df-esg-to-db-esg)
-    - [ESG_Topic](#esg_topic-1)
+    - [ESG\_Topic](#esg_topic-1)
       - [Input:](#input-3)
       - [Additional Steps:](#additional-steps)
       - [Output](#output-2)
@@ -49,7 +70,7 @@
 - [Model 1 vs Model 2](#model-1-vs-model-2)
 - [Launching SMT](#launching-smt)
 - [Changing Parameters](#changing-parameters)
-  - [Update_DB](#update_db-2)
+  - [Update\_DB](#update_db-2)
     - [Size of weekly Scraping](#size-of-weekly-scraping)
     - [Scaping mode](#scaping-mode)
     - [Embedder model](#embedder-model)
@@ -61,9 +82,9 @@
     - [Skip UMAP](#skip-umap)
     - [New Dimension](#new-dimension)
     - [HDBScan minimal topic size](#hdbscan-minimal-topic-size)
-    - [Number of extracted keywords & hashtags](#number-of-extracted-keywords--hashtags)
+    - [Number of extracted keywords \& hashtags](#number-of-extracted-keywords--hashtags)
     - [MMR diversity](#mmr-diversity)
-- [Further Improvements & Ideas](#further-improvements--ideas)
+- [Further Improvements \& Ideas](#further-improvements--ideas)
   - [Scraping:](#scraping-1)
   - [Preprocessing:](#preprocessing)
   - [ESG Filter](#esg-filter)
@@ -77,32 +98,9 @@
 --------
 
 Made by: Ahmad Rammal \
-Original date: 31/08/2022 \
-Last update: 02/09/2022
+Last update: 02/09/2024
 
 --------
-# Introduction
-
-
-Fellow Datascientist!\
- As you're reading this section you're making your very first steps into the quest of Twitter Surfing with SurfMetrics. Be well aware of the journey that awaits you beyond the lines of this markdown,  for the content of this file (along with the code that is :)) is the culmination of a great adventure that i pulled through. \
-In particular this file will serve as your guide and weapon against the dark forces of programmer's block and undesirable bugs. \
-The code itself is fortified with blocks of Info and Comments so don't hesitate to return to it and make it your ally too. \
-In addition to that four maps (or diagrams as they say in the programmers realm) were burried in this same folder. They will help clear your sight and show you the pathes and choices i made along my way. Remember to consult them whenever you feel the multitude of possibilities crawling on you.\
-Now without any further ado, i present to you the two models of "Surf Mes Tweets".
-
---------
-
-# Project Overview
-
-The stucture that was concieved for the SMT (Surf Mes Tweets) project is as follows.\
-Suppose a company would like to know it's ESG-reputation on twitter. What we do is scrap the tweets that are related to the company in the ESG topics.\
-We measure the sentiment of each tweet, then calculate the average sentiment of the tweets, thus determining the ESG score for the company on twitter.\
-\
-When a new client subscribes for our product, we start by creating a twitter database for him. This database contains all the tweets we scrapped for him during his subscription period along with further post-processing data that we'll dive into later.\
-When he logs in he can manually refresh this database, thus collecting new data online and making the results up-to-date. That's something he'll have to do each certain period of time (depending on the company's size and its activity online) in order to have real-time results.\
-Once a database is in our hands, the client can "visualise" his tweets in a nice structured way along with the sentiment score associated with those tweets.\
-Now that's really as simple as i could put it for the project description. Brace yourself for now we're going to take a look at the scripts that are the foundation blocks of Twitter Surfing.\
 
 # Diagrams
 
@@ -118,16 +116,16 @@ So in total we have four diagrams:
 - ESG_Topic
 
 ## SMT Model 1 Diagram
-![Image](Model_1.png)
+![Image](documentation+resources/Model_1.png)
 
 ## SMT Model 2 Diagram
-![Image](Model_2.png)
+![Image](documentation+resources/Model_2.png)
 
 ## Update_DB Diagram
-![Image](Update_DB.png)
+![Image](documentation+resources/Update_DB.png)
 
 ## ESG_Topic Diagram
-![Image](ESG_Topic.png)
+![Image](documentation+resources/ESG_Topic.png)
 
 
 # Model 1: The DataScientist Model
