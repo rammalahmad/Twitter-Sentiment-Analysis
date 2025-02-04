@@ -97,7 +97,7 @@ In summary, the project provides a simple yet effective way for companies to mon
 
 --------
 
-Made by: Ahmad Rammal \
+Made by: Hussein Rammal 
 Last update: 02/09/2024
 
 --------
